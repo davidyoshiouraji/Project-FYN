@@ -34,7 +34,7 @@ Project-FYN/
 
 ### 1. Repository klonen
 ```bash
-git clone https://github.com/DEIN-USERNAME/Project-FYN.git
+git clone https://github.com/davidyoshiouraji/Project-FYN.git
 cd Project-FYN
 ```
 
