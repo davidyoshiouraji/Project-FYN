@@ -1370,7 +1370,7 @@ def classify_account_type(account_num: str) -> str:
     elif 8000 <= num <= 8999:
         return "Umsatzerlöse und Erträge"
     elif 9000 <= num <= 9999:
-        return "Statistische und Vortragskonte"
+        return "Statistische und Vortragskonten"
     else:
         return "Sonstige"
 
