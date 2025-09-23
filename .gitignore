@@ -66,27 +66,33 @@ dmypy.json
 # PROJECT SPECIFIC - Based on current structure
 # =============================================================================
 
-# Current data structure
-data/raw/
-data/processed/
+# Current data structure - only ignore contents, not folders
+data/raw/*.csv
+data/raw/*.xlsx
+data/raw/*.json
+data/processed/*.csv
+data/processed/*.xlsx
+data/processed/*.json
 
 # Keep folder structure
 !data/raw/.gitkeep
 !data/processed/.gitkeep
 
-# Current source structure  
-src/data_preprocessing/
+# Current source structure - REMOVED the problematic line
+# src/data_preprocessing/  <- This was blocking all Python files!
 
-# Notebooks
-notebooks/
+# Notebooks - only ignore checkpoints, keep .ipynb files
+notebooks/.ipynb_checkpoints/
 
-# Output folder
-output/
+# Output folder - ignore contents but keep structure
+output/**/*
+!output/.gitkeep
 
-# Tests
-tests/
+# Tests - keep test files, ignore cache
+tests/__pycache__/
+tests/.pytest_cache/
 
-# Large data files
+# Large data files (specific patterns)
 *.csv
 *.xlsx
 *.json
