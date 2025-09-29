@@ -8,9 +8,7 @@ def extract_datev_accounts() -> List[Tuple[str, str]]:
     Returns list of tuples: (account_number, german_description)
     """
     
-    # This is the complete list extracted from your PDF document
     accounts = [
-        # Class 0 - Anlagevermögen und Kapital
         ("0005", "Rückständige fällige Einzahlungen auf Geschäftsanteile"),
         ("0010", "Entgeltlich erworbene Konzessionen, gewerbliche Schutzrechte und ähnliche Rechte und Werte sowie Lizenzen an solchen Rechten und Werten"),
         ("0015", "Konzessionen"),
@@ -132,7 +130,6 @@ def extract_datev_accounts() -> List[Tuple[str, str]]:
         ("0590", "Ausleihungen an nahe stehende Personen"),
         ("0595", "Rückdeckungsansprüche aus Lebensversicherungen zum langfristigen Verbleib"),
         
-        # Verbindlichkeiten
         ("0600", "Anleihen nicht konvertibel"),
         ("0601", "- Restlaufzeit bis 1 Jahr"),
         ("0605", "- Restlaufzeit 1 bis 5 Jahre"),
@@ -180,7 +177,6 @@ def extract_datev_accounts() -> List[Tuple[str, str]]:
         ("0790", "Sonstige Verbindlichkeiten, vor Restlaufzeitdifferenzierung (nur Bilanzierer)"),
         ("0799", "Gegenkonto 0730-0789 und 1665-1678 und 1695-1698 bei Aufteilung der Konten 0790-0798"),
         
-        # Kapital
         ("0800", "Gezeichnetes Kapital"),
         ("0809", "Kapitalerhöhung aus Gesellschaftsmitteln"),
         ("0810", "Geschäftsguthaben der verbleibenden Mitglieder"),
@@ -213,7 +209,6 @@ def extract_datev_accounts() -> List[Tuple[str, str]]:
         ("0867", "Verlustvortrag vor Verwendung (mit Aufteilung für Kapitalkontenentwicklung)"),
         ("0868", "Verlustvortrag vor Verwendung"),
         
-        # Eigenkapital
         ("0870", "Festkapital"),
         ("0871", "Kapital (fester Anteil, nur Einzelunternehmen)"),
         ("0880", "Variables Kapital"),
@@ -223,7 +218,6 @@ def extract_datev_accounts() -> List[Tuple[str, str]]:
         ("0910", "Verlustausgleichskonto"),
         ("0920", "Gesellschafter-Darlehen"),
         
-        # Sonderposten mit Rücklageanteil
         ("0930", "Übrige andere Sonderposten"),
         ("0931", "Steuerfreie Rücklagen nach § 6b EStG"),
         ("0932", "Rücklage für Ersatzbeschaffung"),
@@ -234,7 +228,6 @@ def extract_datev_accounts() -> List[Tuple[str, str]]:
         ("0948", "Sonderposten für Zuschüsse Dritter"),
         ("0949", "Sonderposten für Investitionszulagen"),
         
-        # Rückstellungen
         ("0950", "Rückstellungen für Pensionen und ähnliche Verpflichtungen"),
         ("0951", "Rückstellungen für Pensionen und ähnliche Verpflichtungen zur Saldierung mit Vermögensgegenständen zum langfristigen Verbleib nach § 246 Abs. 2 HGB"),
         ("0952", "Rückstellungen für Pensionen und ähnliche Verpflichtungen gegenüber Gesellschaftern oder nahe stehenden Personen"),
@@ -260,7 +253,6 @@ def extract_datev_accounts() -> List[Tuple[str, str]]:
         ("0978", "Aufwandsrückstellungen nach § 249 Abs. 2 HGB a. F."),
         ("0979", "Rückstellungen für Umweltschutz"),
         
-        # Abgrenzungsposten
         ("0980", "Aktive Rechnungsabgrenzung"),
         ("0983", "Aktive latente Steuern"),
         ("0984", "Als Aufwand berücksichtigte Zölle und Verbrauchsteuern auf Vorräte"),
@@ -276,7 +268,6 @@ def extract_datev_accounts() -> List[Tuple[str, str]]:
         ("0998", "Einzelwertberichtigungen auf Forderungen - Restlaufzeit bis zu 1 Jahr"),
         ("0999", "- Restlaufzeit größer 1 Jahr"),
         
-        # Class 1 - Finanz- und Privatkonten
         ("1000", "Kasse"),
         ("1010", "Nebenkasse 1"),
         ("1020", "Nebenkasse 2"),
@@ -428,7 +419,6 @@ def extract_datev_accounts() -> List[Tuple[str, str]]:
         ("1598", "- Restlaufzeit bis 1 Jahr"),
         ("1599", "- Restlaufzeit größer 1 Jahr"),
         
-        # Verbindlichkeiten
         ("1600", "Verbindlichkeiten aus Lieferungen und Leistungen"),
         ("1605", "Verbindlichkeiten aus Lieferungen und Leistungen zum allgemeinen Umsatzsteuersatz (EÜR)"),
         ("1606", "Verbindlichkeiten aus Lieferungen und Leistungen zum ermäßigten Umsatzsteuersatz (EÜR)"),
@@ -529,7 +519,6 @@ def extract_datev_accounts() -> List[Tuple[str, str]]:
         ("1758", "Sonstige Verbindlichkeiten aus genossenschaftlicher Rückvergütung"),
         ("1759", "Voraussichtliche Beitragsschuld gegenüber den Sozialversicherungsträgern"),
         
-        # Umsatzsteuer-Konten
         ("1760", "Umsatzsteuer nicht fällig"),
         ("1761", "Umsatzsteuer nicht fällig 7 %"),
         ("1762", "Umsatzsteuer nicht fällig aus im Inland steuerpflichtigen EU-Lieferungen"),
@@ -565,7 +554,6 @@ def extract_datev_accounts() -> List[Tuple[str, str]]:
         ("1797", "Verbindlichkeiten aus Umsatzsteuer-Vorauszahlungen"),
         ("1798", "Umsatzsteuer aus im Inland steuerpflichtigen EU-Lieferungen, nur OSS"),
         
-        # Privatkonten
         ("1800", "Privatentnahmen allgemein"),
         ("1801", "Privatentnahmen allgemein (nur Einzelunternehmen)"),
         ("1810", "Privatsteuern"),
@@ -589,7 +577,6 @@ def extract_datev_accounts() -> List[Tuple[str, str]]:
         ("1890", "Privateinlagen"),
         ("1891", "Privateinlagen (nur Einzelunternehmen)"),
         
-        # Class 2 - Abgrenzungskonten (Fortsetzung von P&L Konten)
         ("2100", "Zinsen und ähnliche Aufwendungen"),
         ("2102", "Steuerlich nicht abzugsfähige andere Nebenleistungen zu Steuern § 4 Abs. 5b EStG"),
         ("2103", "Steuerlich abzugsfähige andere Nebenleistungen zu Steuern"),
@@ -626,7 +613,6 @@ def extract_datev_accounts() -> List[Tuple[str, str]]:
         ("2148", "Steuerlich nicht abzugsfähige Zinsaufwendungen aus der Abzinsung von Rückstellungen"),
         ("2149", "Zinsähnliche Aufwendungen an verbundene Unternehmen"),
         
-        # Steuern
         ("2200", "Körperschaftsteuer"),
         ("2203", "Körperschaftsteuer für Vorjahre"),
         ("2204", "Körperschaftsteuererstattungen für Vorjahre"),
@@ -647,7 +633,6 @@ def extract_datev_accounts() -> List[Tuple[str, str]]:
         ("2287", "Steuererstattungen Vorjahre für sonstige Steuern"),
         ("2289", "Erträge aus der Auflösung von Rückstellungen für sonstige Steuern"),
         
-        # Class 3 - Wareneingangs- und Bestandskonten
         ("3000", "Roh-, Hilfs- und Betriebsstoffe"),
         ("3100", "Fremdleistungen"),
         ("3106", "Fremdleistungen 19 % Vorsteuer"),
@@ -655,7 +640,6 @@ def extract_datev_accounts() -> List[Tuple[str, str]]:
         ("3109", "Fremdleistungen ohne Vorsteuer"),
         ("3200", "Wareneingang"),
         
-        # Class 4 - Betriebliche Aufwendungen
         ("4000", "Material- und Stoffverbrauch"),
         ("4100", "Löhne und Gehälter"),
         ("4110", "Löhne"),
@@ -705,7 +689,6 @@ def extract_datev_accounts() -> List[Tuple[str, str]]:
         ("4198", "Pauschale Steuer für Arbeitnehmer"),
         ("4199", "Pauschale Steuer für Aushilfen"),
         
-        # Raumkosten und sonstige betriebliche Aufwendungen
         ("4200", "Raumkosten"),
         ("4210", "Miete (unbewegliche Wirtschaftsgüter)"),
         ("4211", "Aufwendungen für gemietete oder gepachtete unbewegliche Wirtschaftsgüter, die gewerbesteuerlich hinzuzurechnen sind"),
@@ -727,7 +710,6 @@ def extract_datev_accounts() -> List[Tuple[str, str]]:
         ("4289", "Aufwendungen für ein häusliches Arbeitszimmer (nicht abziehbarer Anteil)"),
         ("4290", "Grundstücksaufwendungen betrieblich"),
         
-        # Steuern und Abgaben
         ("4300", "Nicht abziehbare Vorsteuer"),
         ("4301", "Nicht abziehbare Vorsteuer 7 %"),
         ("4306", "Nicht abziehbare Vorsteuer 19 %"),
@@ -743,7 +725,6 @@ def extract_datev_accounts() -> List[Tuple[str, str]]:
         ("4396", "Steuerlich abzugsfähige Verspätungszuschläge und Zwangsgelder"),
         ("4397", "Steuerlich nicht abzugsfähige Verspätungszuschläge und Zwangsgelder"),
         
-        # Fahrzeugkosten
         ("4500", "Fahrzeugkosten"),
         ("4510", "Kfz-Steuer"),
         ("4520", "Fahrzeug-Versicherungen"),
@@ -757,7 +738,6 @@ def extract_datev_accounts() -> List[Tuple[str, str]]:
         ("4590", "Kosten für betrieblich genutzte zum Privatvermögen gehörende Fahrzeuge"),
         ("4595", "Fremdfahrzeugkosten"),
         
-        # Werbekosten und Repräsentation
         ("4600", "Werbekosten"),
         ("4605", "Streuartikel"),
         ("4630", "Geschenke abzugsfähig ohne § 37b EStG"),
@@ -776,7 +756,6 @@ def extract_datev_accounts() -> List[Tuple[str, str]]:
         ("4654", "Nicht abzugsfähige Bewirtungskosten"),
         ("4655", "Nicht abzugsfähige Betriebsausgaben aus Werbe- und Repräsentationskosten"),
         
-        # Reisekosten
         ("4660", "Reisekosten Arbeitnehmer"),
         ("4663", "Reisekosten Arbeitnehmer Fahrtkosten"),
         ("4664", "Reisekosten Arbeitnehmer Verpflegungsmehraufwand"),
@@ -792,7 +771,6 @@ def extract_datev_accounts() -> List[Tuple[str, str]]:
         ("4680", "Fahrten zwischen Wohnung und Betriebsstätte und Familienheimfahrten (Haben) - Fahrzeuge im Betriebsvermögen"),
         ("4681", "Verpflegungsmehraufwendungen im Rahmen der doppelten Haushaltsführung Unternehmer"),
         
-        # Vertrieb und Warenabgabe
         ("4700", "Kosten der Warenabgabe"),
         ("4710", "Verpackungsmaterial"),
         ("4730", "Ausgangsfrachten"),
@@ -801,7 +779,6 @@ def extract_datev_accounts() -> List[Tuple[str, str]]:
         ("4780", "Fremdarbeiten (Vertrieb)"),
         ("4790", "Aufwand für Gewährleistungen"),
         
-        # Reparaturen und Instandhaltung
         ("4800", "Reparaturen und Instandhaltungen von technischen Anlagen und Maschinen"),
         ("4801", "Reparaturen und Instandhaltung von Bauten"),
         ("4805", "Reparaturen und Instandhaltungen von anderen Anlagen und Betriebs- und Geschäftsausstattung"),
@@ -811,7 +788,6 @@ def extract_datev_accounts() -> List[Tuple[str, str]]:
         ("4810", "Mietleasing bewegliche Wirtschaftsgüter für technische Anlagen und Maschinen"),
         ("4815", "Kaufleasing"),
         
-        # Abschreibungen
         ("4822", "Abschreibungen auf immaterielle Vermögensgegenstände"),
         ("4823", "Abschreibungen auf selbst geschaffene immaterielle Vermögensgegenstände"),
         ("4824", "Abschreibungen auf den Geschäfts- oder Firmenwert"),
@@ -854,7 +830,6 @@ def extract_datev_accounts() -> List[Tuple[str, str]]:
         ("4892", "Abschreibungen auf Roh-, Hilfs- und Betriebsstoffe/Waren (soweit unübliche Höhe)"),
         ("4893", "Abschreibungen auf fertige und unfertige Erzeugnisse (soweit unübliche Höhe)"),
         
-        # Sonstige betriebliche Aufwendungen
         ("4900", "Sonstige betriebliche Aufwendungen"),
         ("4902", "Interimskonto für Aufwendungen in einem anderen Land, bei denen eine Vorsteuervergütung möglich ist"),
         ("4905", "Sonstige Aufwendungen betrieblich und regelmäßig"),
@@ -888,7 +863,6 @@ def extract_datev_accounts() -> List[Tuple[str, str]]:
         ("4984", "Genossenschaftliche Rückvergütung an Mitglieder"),
         ("4985", "Werkzeuge und Kleingeräte"),
         
-        # Kalkulatorische Kosten
         ("4990", "Kalkulatorischer Unternehmerlohn"),
         ("4991", "Kalkulatorische Miete und Pacht"),
         ("4992", "Kalkulatorische Zinsen"),
@@ -896,13 +870,11 @@ def extract_datev_accounts() -> List[Tuple[str, str]]:
         ("4994", "Kalkulatorische Wagnisse"),
         ("4995", "Kalkulatorischer Lohn für unentgeltliche Mitarbeiter"),
         
-        # Kosten bei Umsatzkostenverfahren
         ("4996", "Herstellungskosten"),
         ("4997", "Verwaltungskosten"),
         ("4998", "Vertriebskosten"),
         ("4999", "Gegenkonto 4996-4998"),
         
-        # Class 7 - Bestände an Erzeugnissen
         ("7000", "Unfertige Erzeugnisse, unfertige Leistungen (Bestand)"),
         ("7050", "Unfertige Erzeugnisse (Bestand)"),
         ("7080", "Unfertige Leistungen (Bestand)"),
@@ -912,7 +884,6 @@ def extract_datev_accounts() -> List[Tuple[str, str]]:
         ("7110", "Fertige Erzeugnisse (Bestand)"),
         ("7140", "Waren (Bestand)"),
         
-        # Class 8 - Erlöskonten
         ("8000", "Umsatzerlöse"),
         ("8100", "Steuerfreie Umsätze § 4 Nr. 8 ff. UStG"),
         ("8105", "Steuerfreie Umsätze nach § 4 Nr. 12 UStG (Vermietung und Verpachtung)"),
@@ -946,7 +917,6 @@ def extract_datev_accounts() -> List[Tuple[str, str]]:
         ("8449", "Erlöse aus im Inland steuerpflichtigen elektronischen Dienstleistungen 19 % USt"),
         ("8499", "Nebenerlöse (Bezug zu Materialaufwand)"),
         
-        # Sonderbetriebseinnahmen
         ("8500", "Sonderbetriebseinnahmen, Tätigkeitsvergütung"),
         ("8501", "Sonderbetriebseinnahmen, Miet-/Pachteinnahmen"),
         ("8502", "Sonderbetriebseinnahmen, Zinseinnahmen"),
@@ -965,13 +935,11 @@ def extract_datev_accounts() -> List[Tuple[str, str]]:
         ("8576", "Sonstige Erträge aus Provisionen, Lizenzen und Patenten 7 % USt"),
         ("8579", "Sonstige Erträge aus Provisionen, Lizenzen und Patenten 19 % USt"),
         
-        # Statistische Konten EÜR
         ("8580", "Statistisches Konto Erlöse zum allgemeinen Umsatzsteuersatz (EÜR)"),
         ("8581", "Statistisches Konto Erlöse zum ermäßigten Umsatzsteuersatz (EÜR)"),
         ("8582", "Statistisches Konto Erlöse steuerfrei und nicht steuerbar (EÜR)"),
         ("8589", "Gegenkonto 8580-8582 bei Aufteilung der Erlöse nach Steuersätzen (EÜR)"),
         
-        # Sonstige betriebliche Erträge
         ("8590", "Verrechnete sonstige Sachbezüge (keine Waren)"),
         ("8591", "Sachbezüge 7 % USt (Waren)"),
         ("8595", "Sachbezüge 19 % USt (Waren)"),
@@ -987,11 +955,9 @@ def extract_datev_accounts() -> List[Tuple[str, str]]:
         ("8613", "Verrechnete sonstige Sachbezüge 19 % USt"),
         ("8614", "Verrechnete sonstige Sachbezüge ohne Umsatzsteuer"),
         
-        # Zinserträge
         ("8650", "Erlöse Zinsen und Diskontspesen"),
         ("8660", "Erlöse Zinsen und Diskontspesen aus verbundenen Unternehmen"),
         
-        # Erlösschmälerungen
         ("8700", "Erlösschmälerungen"),
         ("8701", "Erlösschmälerungen für steuerfreie Umsätze nach § 4 Nr. 8 ff. UStG"),
         ("8702", "Erlösschmälerungen für steuerfreie Umsätze nach § 4 Nr. 2 bis 7 UStG"),
@@ -1017,7 +983,6 @@ def extract_datev_accounts() -> List[Tuple[str, str]]:
         ("8769", "Gewährte Boni"),
         ("8770", "Gewährte Rabatte"),
         
-        # Erlöse aus Verkäufen
         ("8800", "Erlöse aus Verkäufen Sachanlagevermögen (bei Buchverlust)"),
         ("8817", "Erlöse aus Verkäufen immaterieller Vermögensgegenstände (bei Buchverlust)"),
         ("8818", "Erlöse aus Verkäufen Finanzanlagen (bei Buchverlust)"),
@@ -1031,7 +996,6 @@ def extract_datev_accounts() -> List[Tuple[str, str]]:
         ("8852", "Erlöse aus Verkäufen von Wirtschaftsgütern des Umlaufvermögens, umsatzsteuerfrei § 4 Nr. 8 ff. UStG i. V. m. § 4 Abs. 3 Satz 4 EStG und § 3 Nr. 40 EStG bzw. § 8b Abs. 2 KStG"),
         ("8853", "Erlöse aus Verkäufen von Wirtschaftsgütern des Umlaufvermögens nach § 4 Abs 3 Satz 4 EStG"),
         
-        # Unentgeltliche Wertabgaben
         ("8900", "Unentgeltliche Wertabgaben"),
         ("8905", "Entnahme von Gegenständen ohne USt"),
         ("8906", "Verwendung von Gegenständen für Zwecke außerhalb des Unternehmens ohne USt"),
@@ -1053,7 +1017,6 @@ def extract_datev_accounts() -> List[Tuple[str, str]]:
         ("8955", "Umsatzsteuervergütungen, z. B. nach § 24 UStG"),
         ("8959", "Direkt mit dem Umsatz verbundene Steuern"),
         
-        # Bestandsveränderungen
         ("8960", "Bestandsveränderungen - unfertige Erzeugnisse"),
         ("8970", "Bestandsveränderungen - unfertige Leistungen"),
         ("8975", "Bestandsveränderungen - in Ausführung befindliche Bauaufträge"),
@@ -1063,7 +1026,6 @@ def extract_datev_accounts() -> List[Tuple[str, str]]:
         ("8994", "Aktivierte Eigenleistungen (den Herstellungskosten zurechenbare Fremdkapitalzinsen)"),
         ("8995", "Aktivierte Eigenleistungen zur Erstellung von selbst geschaffenen immateriellen Vermögensgegenständen"),
         
-        # Class 9 - Vortrags-, Kapital-, Korrektur- und statistische Konten (Auswahl)
         ("9000", "Saldenvorträge, Sachkonten"),
         ("9008", "Saldenvorträge, Debitoren"),
         ("9009", "Saldenvorträge, Kreditoren"),
@@ -1075,7 +1037,6 @@ def extract_datev_accounts() -> List[Tuple[str, str]]:
         ("9055", "Offene Posten aus 2025"),
         ("9090", "Summenvortragskonto"),
         
-        # Statistische Konten für BWA
         ("9101", "Verkaufstage"),
         ("9102", "Anzahl der Barkunden"),
         ("9103", "Beschäftigte Personen"),
@@ -1092,12 +1053,10 @@ def extract_datev_accounts() -> List[Tuple[str, str]]:
         ("9141", "Variables Kapital TH"),
         ("9142", "Variables Kapital - Anteil Teilhafter"),
         
-        # Sammelposten anrechenbare Privatsteuern
         ("9143", "Privatsteuern Kapitalertragsteuer (Sammelposten)"),
         ("9144", "Privatsteuern Solidaritätszuschlag (Sammelposten)"),
         ("9145", "Privatsteuern Kirchensteuer (Sammelposten)"),
         
-        # Kapitalkonten Personengesellschaften
         ("9200", "Beschäftigte Personen"),
         ("9209", "Gegenkonto zu 9200"),
         ("9210", "Produktive Löhne"),
@@ -1105,7 +1064,6 @@ def extract_datev_accounts() -> List[Tuple[str, str]]:
         ("9220", "Gezeichnetes Kapital in DM (Art. 42 Abs. 3 Satz 1 EGHGB)"),
         ("9229", "Gegenkonto zu 9220"),
         
-        # Statistische Konten für die Kapitalflussrechnung
         ("9240", "Investitionsverbindlichkeiten bei den Leistungsverbindlichkeiten"),
         ("9241", "Investitionsverbindlichkeiten aus Sachanlagekäufen bei Leistungsverbindlichkeiten"),
         ("9242", "Investitionsverbindlichkeiten aus Käufen von immateriellen Vermögensgegenständen bei Leistungsverbindlichkeiten"),
@@ -1116,13 +1074,11 @@ def extract_datev_accounts() -> List[Tuple[str, str]]:
         ("9247", "Forderungen aus Verkäufen von Finanzanlagen bei sonstigen Vermögensgegenständen"),
         ("9249", "Gegenkonto zu Konten 9245-9247"),
         
-        # Aufgliederung der Rückstellungen
         ("9260", "Kurzfristige Rückstellungen"),
         ("9262", "Mittelfristige Rückstellungen"),
         ("9264", "Langfristige Rückstellungen, außer Pensionen"),
         ("9269", "Gegenkonto zu Konten 9260-9268"),
         
-        # Statistische Konten für Haftungsverhältnisse
         ("9270", "Gegenkonto zu 9271-9279 (Soll-Buchung)"),
         ("9271", "Verbindlichkeiten aus der Begebung und Übertragung von Wechseln"),
         ("9272", "Verbindlichkeiten aus der Begebung und Übertragung von Wechseln gegenüber verbundenen/assoziierten Unternehmen"),
@@ -1134,18 +1090,15 @@ def extract_datev_accounts() -> List[Tuple[str, str]]:
         ("9278", "Haftung aus der Bestellung von Sicherheiten für fremde Verbindlichkeiten gegenüber verbundenen/assoziierten Unternehmen"),
         ("9279", "Verpflichtungen aus Treuhandvermögen"),
         
-        # Sonstige finanzielle Verpflichtungen
         ("9280", "Gegenkonto zu 9281-9284"),
         ("9281", "Verpflichtungen aus Miet- und Leasingverträgen"),
         ("9282", "Verpflichtungen aus Miet- und Leasingverträgen gegenüber verbundenen Unternehmen"),
         ("9283", "Andere Verpflichtungen nach § 285 Nr. 3a HGB"),
         ("9284", "Andere Verpflichtungen nach § 285 Nr. 3a HGB gegenüber verbundenen Unternehmen"),
         
-        # Unterschiedsbetrag aus Abzinsung
         ("9285", "Unterschiedsbetrag aus der Abzinsung von Altersversorgungsverpflichtungen nach § 253 Abs. 6 HGB (Haben)"),
         ("9286", "Gegenkonto zu 9285"),
         
-        # Statistische Konten für § 4 Abs. 3 EStG
         ("9287", "Zinsen bei Buchungen über Debitoren bei § 4 Abs. 3 EStG"),
         ("9288", "Mahngebühren bei Buchungen über Debitoren bei § 4 Abs. 3 EStG"),
         ("9289", "Gegenkonto zu 9287 und 9288"),
@@ -1154,13 +1107,11 @@ def extract_datev_accounts() -> List[Tuple[str, str]]:
         ("9292", "Statistisches Konto Fremdgeld"),
         ("9293", "Gegenkonto zu 9292"),
         
-        # Einlagen stiller Gesellschafter
         ("9295", "Einlagen atypisch stiller Gesellschafter"),
         ("9297", "Steuerlicher Ausgleichsposten (Körperschaften)"),
         ("9298", "Steuerlicher Ausgleichsposten VH (Personengesellschaften, Einzelunternehmen)"),
         ("9299", "Steuerlicher Ausgleichsposten TH (Personengesellschaften)"),
         
-        # Privat Teilhafter (Eigenkapital)
         ("9400", "Privatentnahmen allgemein (TH), EK"),
         ("9410", "Privatsteuern (TH), EK"),
         ("9420", "Sonderausgaben beschränkt abzugsfähig (TH), EK"),
@@ -1172,7 +1123,6 @@ def extract_datev_accounts() -> List[Tuple[str, str]]:
         ("9480", "Unentgeltliche Wertabgaben (TH), EK"),
         ("9490", "Privateinlagen (TH), EK"),
         
-        # Statistische Konten für Kapitalkontenentwicklung
         ("9500", "Anteil für Konto 0900 Teilhafter"),
         ("9510", "Anteil für Konto 0910 Teilhafter"),
         ("9520", "Anteil für Konto 0920 Teilhafter"),
@@ -1184,7 +1134,6 @@ def extract_datev_accounts() -> List[Tuple[str, str]]:
         ("9580", "Anteil für Konto 0880 Vollhafter"),
         ("9590", "Anteil für Konto 0890 Vollhafter"),
         
-        # Gesellschafterkonten
         ("9600", "Name des Gesellschafters Vollhafter"),
         ("9610", "Tätigkeitsvergütung Vollhafter"),
         ("9620", "Tantieme Vollhafter"),
@@ -1207,30 +1156,25 @@ def extract_datev_accounts() -> List[Tuple[str, str]]:
         ("9780", "Anteil für Konto 9840 Teilhafter"),
         ("9790", "Restanteil Teilhafter"),
         
-        # Rücklagen, Gewinn-, Verlustvortrag
         ("9802", "Gesamthänderisch gebundene Rücklagen - andere Kapitalkontenanpassungen"),
         ("9803", "Gewinnvortrag/Verlustvortrag - andere Kapitalkontenanpassungen"),
         ("9804", "Gesamthänderisch gebundene Rücklagen - Umbuchungen"),
         ("9805", "Gewinnvortrag/Verlustvortrag - Umbuchungen"),
         
-        # Statistische Anteile
         ("9806", "Zuzurechnender Anteil am Jahresüberschuss/Jahresfehlbetrag - je Gesellschafter"),
         ("9807", "Zuzurechnender Anteil am Bilanzgewinn/Bilanzverlust - je Gesellschafter"),
         ("9808", "Gegenkonto für zuzurechnenden Anteil am Jahresüberschuss/Jahresfehlbetrag"),
         ("9809", "Gegenkonto für zuzurechnenden Anteil am Bilanzgewinn/Bilanzverlust"),
         
-        # Kapital Personenhandelsgesellschaft
         ("9810", "Kapitalkonto III"),
         ("9820", "Verlust-/Vortragskonto"),
         ("9830", "Verrechnungskonto für Einzahlungsverpflichtungen"),
         ("9840", "Kapitalkonto III"),
         ("9850", "Verrechnungskonto für Einzahlungsverpflichtungen"),
         
-        # Einzahlungsverpflichtungen
         ("9860", "Einzahlungsverpflichtungen persönlich haftender Gesellschafter"),
         ("9870", "Einzahlungsverpflichtungen Kommanditisten"),
         
-        # Ausgleichsposten und Entnahmen
         ("9880", "Ausgleichsposten für aktivierte eigene Anteile"),
         ("9883", "Nicht durch Vermögenseinlagen gedeckte Entnahmen persönlich haftender Gesellschafter"),
         ("9884", "Nicht durch Vermögenseinlagen gedeckte Entnahmen Kommanditisten"),
@@ -1239,12 +1183,10 @@ def extract_datev_accounts() -> List[Tuple[str, str]]:
         ("9887", "Steueraufwand der Gesellschafter"),
         ("9889", "Gegenkonto zu 9887"),
         
-        # Statistische Konten für Gewinnzuschlag
         ("9890", "Statistisches Konto für den Gewinnzuschlag nach §§ 6b Abs. 7 und 6c EStG (Haben)"),
         ("9891", "Gegenkonto zu statistischen Konten für den Gewinnzuschlag (Soll)"),
         ("9892", "Veränderung der gesamthänderisch gebundenen Rücklagen (Einlagen/Entnahmen)"),
         
-        # Vorsteuer-/Umsatzsteuerkonten zur Korrektur (EÜR)
         ("9893", "Umsatzsteuer in den Forderungen zum allgemeinen Umsatzsteuersatz (EÜR)"),
         ("9894", "Umsatzsteuer in den Forderungen zum ermäßigten Umsatzsteuersatz (EÜR)"),
         ("9895", "Gegenkonto 9893-9894 für die Aufteilung der Umsatzsteuer (EÜR)"),
@@ -1260,7 +1202,6 @@ def extract_datev_accounts() -> List[Tuple[str, str]]:
         ("9908", "Nicht abzugsfähige Betriebsausgaben nach § 3c Abs. 1 EStG i. V. m. § 3 Nr. 72 EStG (Haben)"),
         ("9909", "Gegenkonto zu nicht abzugsfähigen Betriebsausgaben nach § 3c Abs. 1 EStG i. V. m. § 3 Nr. 72 EStG (Soll)"),
         
-        # Statistische Konten zu § 4 Abs. 4a EStG
         ("9910", "Gegenkonto zur Minderung der Entnahmen § 4 Abs. 4a EStG"),
         ("9911", "Minderung der Entnahmen § 4 Abs. 4a EStG (Haben)"),
         ("9912", "Erhöhung der Entnahmen § 4 Abs. 4a EStG"),
@@ -1270,13 +1211,11 @@ def extract_datev_accounts() -> List[Tuple[str, str]]:
         ("9918", "Rückgängigmachung Investitionsabzugsbetrag § 7g Abs. 3 und 4 EStG im 2. vorangegangenen Wirtschaftsjahr"),
         ("9919", "Rückgängigmachung Investitionsabzugsbetrag § 7g Abs. 3 und 4 EStG im 3. vorangegangenen Wirtschaftsjahr"),
         
-        # Ausstehende Einlagen
         ("9920", "Ausstehende Einlagen auf das Komplementär-Kapital, nicht eingefordert"),
         ("9930", "Ausstehende Einlagen auf das Komplementär-Kapital, eingefordert"),
         ("9940", "Ausstehende Einlagen auf das Kommandit-Kapital, nicht eingefordert"),
         ("9950", "Ausstehende Einlagen auf das Kommandit-Kapital, eingefordert"),
         
-        # Bewertungskorrekturen
         ("9960", "Bewertungskorrektur zu Forderungen aus Lieferungen und Leistungen (Währungsumrechnung)"),
         ("9961", "Bewertungskorrektur zu sonstigen Verbindlichkeiten (Währungsumrechnung)"),
         ("9962", "Bewertungskorrektur zu Guthaben bei Kreditinstituten (Bewertung Finanzmittelfonds)"),
@@ -1284,7 +1223,6 @@ def extract_datev_accounts() -> List[Tuple[str, str]]:
         ("9964", "Bewertungskorrektur zu Verbindlichkeiten aus Lieferungen und Leistungen (Währungsumrechnung)"),
         ("9965", "Bewertungskorrektur zu sonstigen Vermögensgegenständen (Währungsumrechnung)"),
         
-        # Statistische Konten für Investitionsabzugsbetrag
         ("9970", "Investitionsabzugsbetrag § 7g Abs. 1 EStG, außerbilanziell (Soll)"),
         ("9971", "Investitionsabzugsbetrag § 7g Abs. 1 EStG, außerbilanziell (Haben) - Gegenkonto zu 9970"),
         ("9972", "Hinzurechnung Investitionsabzugsbetrag § 7g Abs. 2 EStG aus dem vorangegangenen Wirtschaftsjahr, außerbilanziell (Haben)"),
@@ -1292,26 +1230,22 @@ def extract_datev_accounts() -> List[Tuple[str, str]]:
         ("9974", "Rückgängigmachung Investitionsabzugsbetrag § 7g Abs. 3 und 4 EStG im vorangegangenen Wirtschaftsjahr"),
         ("9975", "Rückgängigmachung Investitionsabzugsbetrag § 7g Abs. 3 und 4 EStG in den vorangegangenen Wirtschaftsjahren - Gegenkonto zu 9974, 9918, 9919"),
         
-        # Zinsschranke
         ("9976", "Nicht abzugsfähige Zinsaufwendungen nach § 4h EStG (Haben)"),
         ("9977", "Nicht abzugsfähige Zinsaufwendungen nach § 4h EStG (Soll) - Gegenkonto zu 9976"),
         ("9978", "Abziehbare Zinsaufwendungen aus Vorjahren nach § 4h EStG (Soll)"),
         ("9979", "Abziehbare Zinsaufwendungen aus Vorjahren nach § 4h EStG (Haben) - Gegenkonto zu 9978"),
         
-        # GuV-Ausweis
         ("9980", "Anteil Belastung auf Verbindlichkeitskonten"),
         ("9981", "Verrechnungskonto für Anteil Belastung auf Verbindlichkeitskonten"),
         ("9982", "Anteil Gutschrift auf Verbindlichkeitskonten"),
         ("9983", "Verrechnungskonto für Anteil Gutschrift auf Verbindlichkeitskonten"),
         
-        # Gewinnkorrektur
         ("9984", "Gewinnkorrektur nach § 60 Abs. 2 EStDV - Erhöhung handelsrechtliches Ergebnis durch Habenbuchung - Minderung handelsrechtliches Ergebnis durch Sollbuchung"),
         ("9985", "Gegenkonto zu 9984"),
         ("9986", "Ergebnisverteilung auf Fremdkapital"),
         ("9987", "Korrekturkonto für die Überleitungsrechnung"),
         ("9989", "Gegenkonto zu 9986-9988"),
-        
-        # Außergewöhnliche Geschäftsvorfälle
+
         ("9990", "Erträge von außergewöhnlicher Größenordnung oder Bedeutung"),
         ("9991", "Erträge (aperiodisch)"),
         ("9992", "Erträge von außergewöhnlicher Größenordnung oder Bedeutung (aperiodisch)"),
@@ -1343,14 +1277,196 @@ def classify_account_type(account_num: str) -> str:
     """Classify account into major categories based on account number"""
     num = int(account_num)
     
-    if 0 <= num <= 99:
+    if 0 <= num <= 49:
+        # There is one account before that does not have any higher level
         return "Immaterielle Vermögensgegenstände"
-    elif 100 <= num <= 499:
+    elif 50 <= num <= 499:
         return "Sachanlagen"
     elif 500 <= num <= 599:
         return "Finanzanlagen"
-    elif 600 <= num <= 899:
-        return "Eigenkapital und Verbindlichkeiten"
+    elif 600 <= num <= 799:
+        return "Verbindlichkeiten"
+    elif 800 <= num <= 839:
+        # There is a "Kapital" in front here as well, do we use that as well?
+        return "Kapitalgesellschaft"
+    elif 840 <= num <= 845:
+        return "Kapitalrücklage"
+    elif 846 <= num <= 869:
+        return "Gewinnrücklagen"
+    elif 870 <= num <= 889:
+        # There is also a "Kapital" in front here as well, do we use that as well?
+        return "Eigenkapital Vollhafter/Einzelunternehmer"
+    elif 890 <= num <= 899:
+        return "Fremdkapital Vollhafter"
+    elif 900 <= num <= 919:
+        return "Eigenkapital Teilhafter"
+    elif 920 <= num <= 929:
+        return "Fremdkapital Teilhafter"
+    elif 930 <= num <= 949:
+        return "Sonderposten mit Rücklageanteil"
+    elif 950 <= num <= 979:
+        return "Rückstellungen"
+    elif 980 <= num <= 999:
+        return "Abgrenzungsposten"
+    elif 1000 <= num <= 1339:
+        return "Kassenbestand, Bundesbank- und Postbankguthaben, Guthaben bei Kreditinstituten und Schecks"
+    elif 1340 <= num <= 1349:
+        return "Wertpapiere"
+    elif 1350 <= num <= 1599:
+        return "Forderungen und sonstige Vermögensgegenstände"
+    elif 1600 <= num <= 1799:
+        return "Verbindlichkeiten"
+    elif 1800 <= num <= 1899:
+        return "Privat (Eigenkapital) Vollhafter/Einzelunternehmer"
+    elif 1900 <= num <= 1999:
+        return "Privat (Fremdkapital) Teilhafter"
+    elif 2000 <= num <= 2009:
+        return "Sonstige betriebliche Aufwendungen"
+    elif 2010 <= num <= 2020:
+        return "Betriebsfremde und periodenfremde Aufwendungen"
+    elif 2030 <= num <= 2099:
+        return "Aufwendungen aus der Anwendung von Übergangsvorschriften i. S. d. BilMoG"
+    elif 2100 <= num <= 2199:
+        return "Zinsen und ähnliche Aufwendungen"
+    elif 2200 <= num <= 2299:
+        return "Steuern vom Einkommen und Ertrag"
+    elif 2300 <= num <= 2499:
+        return "Sonstige Aufwendungen"
+    elif 2500 <= num <= 2509:
+        return "Sonstige betriebliche Erträge"
+    elif 2510 <= num <= 2520:
+        return "Betriebsfremde und periodenfremde Erträge"
+    elif 2530 <= num <= 2599:
+        return "Erträge aus der Anwendung von Übergangsvorschriften i. S. d. BilMoG"
+    elif 2600 <= num <= 2699:
+        return "Zinserträge"
+    elif 2700 <= num <= 2870:
+        return "Sonstige Erträge"
+    elif 2880 <= num <= 2999:
+        return "Verrechnete kalkulatorische Kosten"
+    elif 3000 <= num <= 3109:
+        return "Materialaufwand"
+    elif 3110 <= num <= 3969:
+        return "Umsätze, für die als Leistungsempfänger die Steuer nach § 13b UStG geschuldet wird"
+    elif 3970 <= num <= 3889:
+        return "Bestand an Vorräten"
+    elif 3990 <= num <= 3999:
+        return "Verrechnete Stoffkosten"
+    elif 4000 <= num <= 4099:
+        return "Material- und Stoffverbrauch"
+    elif 4100 <= num <= 4199:
+        return "Personalaufwendungen"
+    elif 4200 <= num <= 4989:
+        return "Sonstige betriebliche Aufwendungen und Abschreibungen"
+    elif 4990 <= num <= 4995:
+        return "Kalkulatorische Kosten"
+    elif 4996 <= num <= 4999:
+        return "Kosten bei Anwendung des Umsatzkostenverfahrens"
+    elif 5000 <= num <= 6999:
+        return "Sonstige betriebliche Aufwendungen"
+    elif 7000 <= num <= 7999:
+        return "Bestände an Erzeugnissen"
+    elif 8000 <= num <= 8499:
+        return "Umsatzerlöse"
+    elif 8500 <= num <= 8579:
+        return "Konten für die Verbuchung von Sonderbetriebseinnahmen"
+    elif 8580 <= num <= 8999:
+        return "Statistische Konten EÜR"
+    elif 9000 <= num <= 9099:
+        return "Vortragskonten"
+    elif 9100 <= num <= 9139:
+        return "Statistische Konten für betriebswirtschaftliche Auswertungen (BWA)"
+    elif 9140 <= num <= 9142:
+        return "Variables Kapital Teilhafter"
+    elif 9143 <= num <= 9145:
+        return "Sammelposten anrechenbare Privatsteuern"
+    elif 9146 <= num <= 9149:
+        return "Kapitaländerungen durch Übertragung einer § 6b EStG Rücklage"
+    elif 9150 <= num <= 9156:
+        return " Andere Kapitalkontenanpassungen: Vollhafter"
+    elif 9157 <= num <= 9159:
+        return "Anrechenbare Privatsteuern Vollhafter, Eigenkapital"
+    elif 9160 <= num <= 9166:
+        return "Andere Kapitalrücklagenanpassungen: Teilhafter"
+    elif 9167 <= num <= 9169:
+        return "Anrechenbare Privatsteuern Teilhafter, Eigenkapital"
+    elif 9167 <= num <= 9169:
+        return "Anrechenbare Privatsteuern Teilhafter, Eigenkapital"
+    elif 9170 <= num <= 9179:
+        return "Umbuchungen auf andere Kapitalkonten: Vollhafter"
+    elif 9180 <= num <= 9185:
+        return "Umbuchungen auf andere Kapitalkonten: Teilhafter"
+    elif 9186 <= num <= 9189:
+        return "Anrechenbare Privatsteuern Teilhafter, Fremdkapital"
+    elif 9190 <= num <= 9199:
+        return "Gegenkonten zu statistischen Konten für Betriebswirtschaftliche Auswertungen"
+    elif 9200 <= num <= 9219:
+        return "Statistische Konten für die Kapitalflussrechnung"
+    elif 9220 <= num <= 9229:
+        return "Statistische Konten zur informativen Angabe des gezeichneten Kapitals in anderer Währung"
+    elif 9240 <= num <= 9259:
+        return "Statistische Konten für die Kapitalflussrechnung"
+    elif 9260 <= num <= 9269:
+        return "Aufgliederung der Rückstellungen für die Programme der Wirtschaftsforschung"
+    elif 9270 <= num <= 9279:
+        return "Statistische Konten für in der Bilanz auszuweisende Haftungsverhältnisse"
+    
+    # Ab hier weitermachen
+    
+    elif 9280 <= num <= 9289:
+        return "Statistische Konten für die im Anhang anzugebenden sonstigen finanziellen Verpflichtungen"
+    elif 9285 <= num <= 9286:
+        return "Unterschiedsbeträge aus der Abzinsung von Altersversorgungsverpflichtungen nach § 253 Abs. 6 HGB"
+    elif 9290 <= num <= 9299:
+        return "Statistische Konten für § 4 Abs. 5 EStG"
+    elif 9300 <= num <= 9309:
+        return "Einlagen atypisch stiller Gesellschafter"
+    elif 9400 <= num <= 9499:
+        return "Privat Teilhafter (Eigenkapital, für Verwendung mit Kapitalkonto II – Konto 9840)"
+    elif 9500 <= num <= 9599:
+        return "Statistische Konten für die Kapitalfortentwicklung"
+    elif 9600 <= num <= 9699:
+        return "Rücklagen, Gewinn-, Verlustvorträge"
+    elif 9700 <= num <= 9749:
+        return "Statistische Anteile an den Positionen der Gewinn- und Verlustrechnung nach § 275 HGB"
+    elif 9750 <= num <= 9799:
+        return "Kapital Personengesellschaft – Vollhafter"
+    elif 9800 <= num <= 9849:
+        return "Kapital Personengesellschaft – Teilhafter"
+    elif 9850 <= num <= 9869:
+        return "Einzahlungen/Einlagen in das Privatvermögen"
+    elif 9880 <= num <= 9889:
+        return "Ausgleichsposten für aktivierte Eigenleistungen"
+    elif 9890 <= num <= 9899:
+        return "Erhaltene Vermögensgegenstände für nicht entgeltlich erwirtschaftete Leistungen"
+    elif 9900 <= num <= 9909:
+        return "Steueraufwand der Gesellschafter"
+    elif 9910 <= num <= 9919:
+        return "Statistische Konten für Gewinnverwendung"
+    elif 9920 <= num <= 9929:
+        return "Konten/Umsatzkonten Verbindlichkeiten an Gesellschafter"
+    elif 9930 <= num <= 9939:
+        return "Statistische Konten für § 4 Abs. 4a EStG"
+    elif 9940 <= num <= 9949:
+        return "Statistische Konten für die Kapitalrücklage nach § 272 Abs. 2 HGB"
+    elif 9950 <= num <= 9959:
+        return "Statistische Konten für die Zinsaufwendungen nach § 4h EStG"
+    elif 9960 <= num <= 9969:
+        return "Statistische Konten für Sonderausgaben nach § 10b EStG"
+    elif 9970 <= num <= 9979:
+        return "Statistische Konten für die Kapitalentwicklung nach § 5 Abs. 1a EStG"
+    elif 9980 <= num <= 9989:
+        return "Statistische Konten für Rückstellungen nach § 249 HGB"
+    elif 9990 <= num <= 9999:
+        return "Statistische Konten für den Ausweis von Verbindlichkeiten nach § 268 HGB"
+
+    
+
+    
+    
+    
+    
+    
     elif 900 <= num <= 999:
         return "Rückstellungen und Abgrenzung"
     elif 1000 <= num <= 1399:
