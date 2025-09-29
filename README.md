@@ -2,35 +2,36 @@
 
 Projekt zur Entwicklung eines MVP für automatisierte Financial Due Diligence.
 
-## 🚀 Überblick
+## Überblick
 
 Dieses Projekt automatisiert die Extraktion und Analyse von Finanzdaten aus verschiedenen Quellen (Excel, PDF, CSV) für Due Diligence Prozesse. Das System verarbeitet Kontodaten, Transaktionen und erstellt standardisierte Reports.
 
-## 📁 Projektstruktur
+## Projektstruktur
 
 ```
 Project-FYN/
-├── README.md                    # Diese Datei
-├── requirements.txt             # Python Dependencies
-├── .gitignore                  # Git Ignore Rules
+├── README.md
+├── requirements.txt            
+├── .gitignore                
 │
-├── src/                        # Quellcode
-│   └── data_preprocessing/     # Datenverarbeitung
+├── src/                      
+│   └── data_preprocessing/     
 │       └── account_extractor.py
+|       └── account_mapper.py
 │
-├── data/                       # Daten (nicht in Git)
-│   ├── raw/                    # Rohdaten (Excel, CSV, PDF)
-│   └── processed/              # Verarbeitete Daten
+├── data/                      
+│   ├── raw/                    
+│   └── processed/            
 │
-├── notebooks/                  # Jupyter Notebooks
-│   └── data_exploration.ipynb  # Datenanalyse & Prototyping
+├── notebooks/               
 │
-├── output/                     # Generierte Reports (nicht in Git)
 │
-└── tests/                      # Unit Tests
+├── output/
+│
+└── tests/
 ```
 
-## 🛠️ Setup & Installation
+## Setup & Installation
 
 ### 1. Repository klonen
 ```bash
@@ -60,7 +61,7 @@ pip install -r requirements.txt
 mkdir -p data/raw data/processed output
 ```
 
-## 🔧 Verwendung
+## Verwendung
 
 ### Daten hinzufügen
 1. Rohdaten in `data/raw/` ablegen
@@ -70,12 +71,9 @@ mkdir -p data/raw data/processed output
 ```bash
 # Hauptverarbeitung starten
 python src/data_preprocessing/account_extractor.py
-
-# Jupyter Notebook für Analyse
-jupyter notebook notebooks/data_exploration.ipynb
 ```
 
-## 📊 Features
+## Features
 
 - **Automatische Datenextraktion** aus Excel und CSV
 - **PDF-Processing** für Kontoauszüge  
@@ -83,7 +81,7 @@ jupyter notebook notebooks/data_exploration.ipynb
 - **Standardisierte Reports** für Due Diligence
 - **Jupyter Notebooks** für interaktive Analyse
 
-## 🤝 Entwicklung
+## Entwicklung
 
 ### Code hinzufügen
 ```bash
@@ -97,7 +95,7 @@ git push origin main
 python -m pytest tests/
 ```
 
-## 📋 Requirements
+## Requirements
 
 - Python 3.8+
 - pandas, numpy
@@ -105,21 +103,15 @@ python -m pytest tests/
 - jupyter (Notebooks)
 - Weitere siehe `requirements.txt`
 
-## ⚠️ Wichtige Hinweise
+## Wichtige Hinweise
 
 - **Daten werden nicht ins Git gepusht** (siehe `.gitignore`)
 - Rohdaten lokal in `data/raw/` ablegen
 - Sensible Daten nie committen
 - `.env` für Umgebungsvariablen nutzen
 
-## 📈 Roadmap
+## Roadmap
 
-- [ ] PDF-Extraktion implementieren
-- [ ] Database Integration
-- [ ] Web Interface für Reports  
-- [ ] API Endpoints
-- [ ] Docker Deployment
+- [ ] (...)
 
 ---
-
-**Status:** 🚧 In Entwicklung | **Version:** MVP
