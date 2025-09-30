@@ -1434,10 +1434,7 @@ def classify_account_type(account_num: str) -> str:
     elif 9260 <= num <= 9269:
         return "Aufgliederung der Rückstellungen für die Programme der Wirtschaftsforschung"
     elif 9270 <= num <= 9279:
-        return "Statistische Konten für in der Bilanz auszuweisende Haftungsverhältnisse"
-    
-    # Ab hier weitermachen
-    
+        return "Statistische Konten für in der Bilanz auszuweisende Haftungsverhältnisse"    
     elif 9280 <= num <= 9284:
         return "Statistische Konten für die im Anhang anzugebenden sonstigen finanziellen Verpflichtungen"
     elif num in [9285, 9286]:
@@ -1448,8 +1445,6 @@ def classify_account_type(account_num: str) -> str:
         return "Privat Teilhafter (Eigenkapital, für Verrechnung mit Kapitalkonto III - Konto 9840)"
     elif 9500 <= num <= 9799:
         return "Statistische Konten für die Kapitalfortentwicklung"
-    
-    
     elif 9802 <= num <= 9805:
         return "Rücklagen, Gewinn-, Verlustvorträge"
     elif 9806 <= num <= 9809:
@@ -1589,252 +1584,147 @@ if __name__ == "__main__":
 
 
 
-# Put this somewhere up top, auf Bilanz- oder GuV-Posten achten
+# Edit this, then put it somewhere up top, auf Bilanz- oder GuV-Posten achten
 
-def classify_account_type(account_num: str) -> str:
-    """
-    Klassifiziert DATEV SKR 03 Konten nach den exakten Bilanzposten.
-    Maximale Detailtiefe - jeder einzelne Bilanzposten aus dem PDF.
-    """
+def classify_position_level(account_num: str) -> str:
+    """Classify accounts into detailed position levels based on their positions
+    as seen in leftmost and middle column in SKR03 framework."""
     num = int(account_num)
     
-    # Rückständige Einzahlungen
-    if num == 5:
+    # Anlage- und Kapitalkonten    
+    if num < 10:
         return "Rückständige fällige Einzahlungen auf Geschäftsanteile"
-    
-    # Immaterielle Vermögensgegenstände - Entgeltlich erworbene
+    # Immaterielle Vermögensgegenstände
     elif 10 <= num <= 30:
         return "Entgeltlich erworbene Konzessionen, gewerbliche Schutzrechte und ähnliche Rechte und Werte sowie Lizenzen an solchen Rechten und Werten"
     elif num == 35:
         return "Geschäfts- oder Firmenwert"
     elif num in [38, 39]:
         return "Geleistete Anzahlungen"
-    elif num == 40:
-        return "Selbst geschaffene gewerbliche Schutzrechte und ähnliche Rechte und Werte"
     elif 43 <= num <= 48:
         return "Selbst geschaffene gewerbliche Schutzrechte und ähnliche Rechte und Werte"
-    
-    # Sachanlagen - Grundstücke ohne Bauten
-    elif 50 <= num <= 75:
+    # Sachanlagen
+    elif 50 <= num <= 75 or 80 <= num <= 115 or 140 <= num <= 149 or 160 <= num <= 179 or 190 <= num <= 194:
         return "Grundstücke, grundstücksgleiche Rechte und Bauten einschließlich der Bauten auf fremden Grundstücken"
-    elif num == 79:
-        return "Geleistete Anzahlungen und Anlagen im Bau - Anzahlungen auf Grund und Boden"
-    
-    # Sachanlagen - Bauten auf eigenen Grundstücken (Geschäfts-/Fabrikbauten)
-    elif 80 <= num <= 115:
-        return "Grundstücke, grundstücksgleiche Rechte und Bauten einschließlich der Bauten auf fremden Grundstücken - Bauten auf eigenen Grundstücken"
-    elif num == 120:
-        return "Geleistete Anzahlungen und Anlagen im Bau - Geschäfts-, Fabrik- und andere Bauten im Bau auf eigenen Grundstücken"
-    elif num == 129:
-        return "Geleistete Anzahlungen und Anlagen im Bau - Anzahlungen auf Geschäfts-, Fabrik- und andere Bauten auf eigenen Grundstücken"
-    
-    # Sachanlagen - Wohnbauten auf eigenen Grundstücken
-    elif 140 <= num <= 149:
-        return "Grundstücke, grundstücksgleiche Rechte und Bauten einschließlich der Bauten auf fremden Grundstücken - Wohnbauten auf eigenen Grundstücken"
-    elif num == 150:
-        return "Geleistete Anzahlungen und Anlagen im Bau - Wohnbauten im Bau auf eigenen Grundstücken"
-    elif num == 159:
-        return "Geleistete Anzahlungen und Anlagen im Bau - Anzahlungen auf Wohnbauten auf eigenen Grundstücken"
-    
-    # Sachanlagen - Bauten auf fremden Grundstücken (Geschäfts-/Fabrikbauten)
-    elif 160 <= num <= 179:
-        return "Grundstücke, grundstücksgleiche Rechte und Bauten einschließlich der Bauten auf fremden Grundstücken - Bauten auf fremden Grundstücken (Geschäfts-/Fabrikbauten)"
-    elif num == 180:
-        return "Geleistete Anzahlungen und Anlagen im Bau - Geschäfts-, Fabrik- und andere Bauten im Bau auf fremden Grundstücken"
-    elif num == 189:
-        return "Geleistete Anzahlungen und Anlagen im Bau - Anzahlungen auf Geschäfts-, Fabrik- und andere Bauten auf fremden Grundstücken"
-    
-    # Sachanlagen - Wohnbauten auf fremden Grundstücken
-    elif 190 <= num <= 194:
-        return "Grundstücke, grundstücksgleiche Rechte und Bauten einschließlich der Bauten auf fremden Grundstücken - Wohnbauten auf fremden Grundstücken"
-    elif num == 195:
-        return "Geleistete Anzahlungen und Anlagen im Bau - Wohnbauten im Bau auf fremden Grundstücken"
-    elif num == 199:
-        return "Geleistete Anzahlungen und Anlagen im Bau - Anzahlungen auf Wohnbauten auf fremden Grundstücken"
-    
-    # Sachanlagen - Technische Anlagen und Maschinen
+    elif num == 79 or num in [120, 129] or num in [150, 159] or num in [180, 189] or num in [195, 199] or num in [290, 299] or num in [498, 499]:
+        return "Geleistete Anzahlungen und Anlagen im Bau"
     elif 200 <= num <= 280:
         return "Technische Anlagen und Maschinen"
-    elif num == 290:
-        return "Geleistete Anzahlungen und Anlagen im Bau - Technische Anlagen und Maschinen im Bau"
-    elif num == 299:
-        return "Geleistete Anzahlungen und Anlagen im Bau - Anzahlungen auf technische Anlagen und Maschinen"
-    
-    # Sachanlagen - Andere Anlagen, BGA
     elif 300 <= num <= 490:
         return "Andere Anlagen, Betriebs- und Geschäftsausstattung"
-    elif num == 498:
-        return "Geleistete Anzahlungen und Anlagen im Bau - Andere Anlagen, Betriebs- und Geschäftsausstattung im Bau"
-    elif num == 499:
-        return "Geleistete Anzahlungen und Anlagen im Bau - Anzahlungen auf andere Anlagen, Betriebs- und Geschäftsausstattung"
-    
-    # Finanzanlagen - Anteile an verbundenen Unternehmen
-    elif 500 <= num <= 504:
+    # Finanzanlagen
+    elif 500 <= num <= 504 or num == 509:
         return "Anteile an verbundenen Unternehmen"
     elif 505 <= num <= 508:
         return "Ausleihungen an verbundene Unternehmen"
-    elif num == 509:
-        return "Anteile an verbundenen Unternehmen - Anteile an herrschender oder mehrheitlich beteiligter Gesellschaft"
-    
-    # Finanzanlagen - Beteiligungen
     elif 510 <= num <= 519:
         return "Beteiligungen"
-    
-    # Finanzanlagen - Ausleihungen an Unternehmen mit Beteiligungsverhältnis
     elif 520 <= num <= 524:
         return "Ausleihungen an Unternehmen, mit denen ein Beteiligungsverhältnis besteht"
-    
-    # Finanzanlagen - Wertpapiere des Anlagevermögens
     elif 525 <= num <= 538:
         return "Wertpapiere des Anlagevermögens"
-    
-    # Finanzanlagen - Sonstige Ausleihungen
-    elif 540 <= num <= 595:
+    elif 540 <= num <= 550 or 580 <= num <= 590:
         return "Sonstige Ausleihungen"
-    
-    # Verbindlichkeiten - Anleihen
+    elif num == 570:
+        return "Genossenschaftsanteile"
+    elif num == 595:
+        return "Rückdeckungsansprüche aus Lebensversicherungen"
+        # Verbindlichkeiten
     elif 600 <= num <= 625:
         return "Anleihen"
-    
-    # Verbindlichkeiten - Kreditinstitute
-    elif 630 <= num <= 699:
+    elif 630 <= num <= 690:
+        return "Verbindlichkeiten gegenüber Kreditinstituten oder Kassenbestand, Bundesbankguthaben, Guthaben bei Kreditinstituten und Schecks"
+    elif num == 699:
         return "Verbindlichkeiten gegenüber Kreditinstituten"
-    
-    # Verbindlichkeiten - Verbundene Unternehmen
-    elif 700 <= num <= 714:
-        return "Verbindlichkeiten gegenüber verbundenen Unternehmen"
-    
-    # Verbindlichkeiten - Beteiligungsverhältnis
+    elif 700 <= num <= 710:
+        return "Verbindlichkeiten gegenüber verbundenen Unternehmen oder Forderungen gegen verbundene Unternehmen"
     elif 715 <= num <= 729:
-        return "Verbindlichkeiten gegenüber Unternehmen, mit denen ein Beteiligungsverhältnis besteht"
-    
-    # Verbindlichkeiten - Sonstige
+        return "Verbindlichkeiten gegenüber Unternehmen, mit denen ein Beteiligungsverhältnis besteht oder Forderungen gegen Unternehmen, mit denen ein Beteiligungsverhältnis besteht"
     elif 730 <= num <= 799:
         return "Sonstige Verbindlichkeiten"
-    
-    # Kapital - Gezeichnetes Kapital
+    # Kapital Kapitalgesellschaft
     elif 800 <= num <= 815:
         return "Gezeichnetes Kapital"
     elif num == 819:
         return "Eigene Anteile"
-    
-    # Kapital - Ausstehende Einlagen
     elif 820 <= num <= 829:
         return "Nicht eingeforderte ausstehende Einlagen"
     elif 830 <= num <= 838:
         return "Eingeforderte, noch ausstehende Kapitaleinlagen"
     elif num == 839:
         return "Nachschüsse"
-    
-    # Kapitalrücklage
     elif 840 <= num <= 845:
         return "Kapitalrücklage"
-    
-    # Gewinnrücklagen - Gesetzliche Rücklage
+    # Gewinnrücklagen
     elif num == 846:
         return "Gesetzliche Rücklage"
-    
-    # Gewinnrücklagen - Andere Gewinnrücklagen
     elif num == 848:
-        return "Andere Gewinnrücklagen - Andere Gewinnrücklagen aus dem Erwerb eigener Anteile"
+        return "Andere Gewinnrücklagen"
     elif num == 849:
         return "Rücklage für Anteile an einem herrschenden oder mehrheitlich beteiligten Unternehmen"
-    
-    # Gewinnrücklagen - Satzungsmäßige Rücklagen
-    elif 851 <= num <= 852:
+    # This is kind of an edge case as 852 is in between and does not really seem to belong here
+    elif num == 851:
         return "Satzungsmäßige Rücklagen"
-    
-    # Gewinnrücklagen - Andere Gewinnrücklagen
-    elif 853 <= num <= 859:
+    # GPT said to go with 852 onwards even though there is no position label here
+    elif 852 <= num <= 859:
         return "Andere Gewinnrücklagen"
-    
-    # Gewinnvortrag/Verlustvortrag
     elif 860 <= num <= 868:
         return "Gewinnvortrag oder Verlustvortrag"
-    
     # Eigenkapital Vollhafter/Einzelunternehmer
     elif 870 <= num <= 881:
         return "Eigenkapital Vollhafter/Einzelunternehmer"
-    
     # Fremdkapital Vollhafter
     elif 890 <= num <= 899:
         return "Fremdkapital Vollhafter"
-    
     # Eigenkapital Teilhafter
     elif 900 <= num <= 919:
         return "Eigenkapital Teilhafter"
-    
     # Fremdkapital Teilhafter
     elif 920 <= num <= 929:
         return "Fremdkapital Teilhafter"
-    
     # Sonderposten mit Rücklageanteil
     elif 930 <= num <= 947:
         return "Sonderposten mit Rücklageanteil"
-    
     # Sonderposten für Zuschüsse und Zulagen
     elif 948 <= num <= 949:
         return "Sonderposten für Zuschüsse und Zulagen"
-    
     # Rückstellungen für Pensionen
-    elif 950 <= num <= 954:
+    elif num == 950 or 952 <= num <= 954:
         return "Rückstellungen für Pensionen und ähnliche Verpflichtungen"
     elif num == 951:
         return "Rückstellungen für Pensionen und ähnliche Verpflichtungen oder aktiver Unterschiedsbetrag aus der Vermögensverrechnung"
-    
-    # Steuerrückstellungen
-    elif 955 <= num <= 963:
+    elif num in [955, 956] or num in [962, 963]:
         return "Steuerrückstellungen"
-    
-    # Sonstige Rückstellungen
-    elif 964 <= num <= 967:
+    elif num == 961 or 964 <= num <= 966:
         return "Sonstige Rückstellungen"
     elif num == 967:
         return "Sonstige Rückstellungen oder aktiver Unterschiedsbetrag aus der Vermögensverrechnung"
-    
-    # Passive latente Steuern
-    elif 968 <= num <= 969:
+    elif num == 968:
         return "Passive latente Steuern"
-    
-    # Sonstige Rückstellungen
+    elif num == 969:
+        return "Steuerrückstellungen"
     elif 970 <= num <= 979:
         return "Sonstige Rückstellungen"
-    
-    # Rechnungsabgrenzungsposten (Aktiva)
-    elif num == 980:
+    # Abgrenzungsposten
+    elif num == 980 or 984 <= num <= 986:
         return "Rechnungsabgrenzungsposten (Aktiva)"
     elif num == 983:
         return "Aktive latente Steuern"
-    elif 984 <= num <= 986:
-        return "Rechnungsabgrenzungsposten (Aktiva)"
-    
-    # Andere Gewinnrücklagen
     elif 987 <= num <= 989:
         return "Andere Gewinnrücklagen"
-    
-    # Rechnungsabgrenzungsposten (Passiva)
     elif num == 990:
         return "Rechnungsabgrenzungsposten (Passiva)"
-    
-    # Sonstige Aktiva oder sonstige Passiva
     elif num == 992:
         return "Sonstige Aktiva oder sonstige Passiva"
-    
-    # Forderungen aus LuL H-Saldo (Wertberichtigungen)
     elif 996 <= num <= 999:
         return "Forderungen aus Lieferungen und Leistungen H-Saldo"
     
-    # === KLASSE 1: FINANZ- UND PRIVATKONTEN ===
-    
-    # Kasse und Bank
-    elif 1000 <= num <= 1289:
+    # Finanz- und Privatkonten    
+    # Kassenbestand, Bundesbank- und Postbankguthaben, Guthaben bei Kreditinstituten und Schecks 
+    elif 1000 <= num <= 1020 or num == 1330:
         return "Kassenbestand, Bundesbankguthaben, Guthaben bei Kreditinstituten und Schecks"
-    elif num == 1290:
-        return "Finanzmittelanlagen im Rahmen der kurzfristigen Finanzdisposition (nicht im Finanzmittelfonds enthalten)"
-    elif num == 1295:
-        return "Verbindlichkeiten gegenüber Kreditinstituten (nicht im Finanzmittelfonds enthalten)"
-    
-    # Forderungen (Sammelkonten)
+    elif 1100 <= num <= 1295:
+        return "Kassenbestand, Bundesbankguthaben, Guthaben bei Kreditinstituten und Schecks oder Verbindlichkeiten gegenüber Kreditinstituten"    
     elif 1300 <= num <= 1309:
         return "Forderungen aus Lieferungen und Leistungen oder sonstige Verbindlichkeiten"
     elif 1310 <= num <= 1319:
@@ -1843,18 +1733,26 @@ def classify_account_type(account_num: str) -> str:
         return "Forderungen gegenüber Unternehmen, mit denen ein Beteiligungsverhältnis besteht oder Verbindlichkeiten gegenüber Unternehmen, mit denen ein Beteiligungsverhältnis besteht"
     elif 1327 <= num <= 1329:
         return "Sonstige Wertpapiere"
-    elif num == 1330:
-        return "Kassenbestand, Bundesbankguthaben, Guthaben bei Kreditinstituten und Schecks - Schecks"
-    
-    # Wertpapiere
-    elif num == 1340:
-        return "Anteile an verbundenen Unternehmen - Anteile an verbundenen Unternehmen (Umlaufvermögen)"
-    elif num == 1344:
-        return "Anteile an verbundenen Unternehmen - Anteile an herrschender oder mit Mehrheit beteiligter Gesellschaft"
+    elif 1340 <= num <= 1344:
+        return "Anteile an verbundenen Unternehmen"
     elif 1348 <= num <= 1349:
         return "Sonstige Wertpapiere"
     
-    # Sonstige Vermögensgegenstände
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    # Ab hier weitermachen
     elif 1350 <= num <= 1353:
         return "Sonstige Vermögensgegenstände"
     elif num == 1354:
@@ -2369,3 +2267,5 @@ def classify_account_type(account_num: str) -> str:
     
     else:
         return "N/A"
+    
+    
