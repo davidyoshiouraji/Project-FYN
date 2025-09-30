@@ -1,3 +1,11 @@
+# Kontrollieren ob alle Überschriften und Posten passen
+# In Bilanz und GuV einteilen
+# Grobere Kontenübersicht erstellen, also 1000 bis 2000 und so weiter
+# Code sinnvoll strukturieren
+# Testen
+
+
+
 import pandas as pd
 import re
 from typing import List, Tuple
@@ -1264,19 +1272,21 @@ def create_simple_mapping() -> pd.DataFrame:
     """
     accounts = extract_datev_accounts()
     
-    df = pd.DataFrame(accounts, columns=['Kontonummer', 'Kontenbeschreibung'])
+    df = pd.DataFrame(accounts, columns=["Kontonummer", "Kontenbeschreibung"])
     
     # Add basic classification for line-item mapping
-    df['Bilanzposition'] = df['Kontonummer'].apply(classify_account_type)
-    df['GuV_Position'] = df['Kontonummer'].apply(classify_pnl_type)
-    df['Bilanz_Seite'] = df['Kontonummer'].apply(classify_balance_sheet_side)
+    df["Bilanzposition"] = df["Kontonummer"].apply(classify_account_type)
+    df["GuV_Position"] = df["Kontonummer"].apply(classify_pnl_type)
+    df["Bilanz_Seite"] = df["Kontonummer"].apply(classify_balance_sheet_side)
     
     return df
 
+
 def classify_account_type(account_num: str) -> str:
-    """Classify account into major categories based on account number"""
+    """Classify accounts into higher categories based on their headers"""
     num = int(account_num)
     
+    # Anlage- und Kapitalkonten
     if 0 <= num <= 49:
         # There is one account before that does not have any higher level
         return "Immaterielle Vermögensgegenstände"
@@ -1308,6 +1318,8 @@ def classify_account_type(account_num: str) -> str:
         return "Rückstellungen"
     elif 980 <= num <= 999:
         return "Abgrenzungsposten"
+    
+    # Finanz- und Privatkonten
     elif 1000 <= num <= 1339:
         return "Kassenbestand, Bundesbank- und Postbankguthaben, Guthaben bei Kreditinstituten und Schecks"
     elif 1340 <= num <= 1349:
@@ -1320,6 +1332,8 @@ def classify_account_type(account_num: str) -> str:
         return "Privat (Eigenkapital) Vollhafter/Einzelunternehmer"
     elif 1900 <= num <= 1999:
         return "Privat (Fremdkapital) Teilhafter"
+    
+    # Abgrenzungskonten
     elif 2000 <= num <= 2009:
         return "Sonstige betriebliche Aufwendungen"
     elif 2010 <= num <= 2020:
@@ -1344,6 +1358,8 @@ def classify_account_type(account_num: str) -> str:
         return "Sonstige Erträge"
     elif 2880 <= num <= 2999:
         return "Verrechnete kalkulatorische Kosten"
+    
+    # Wareneingangs- und Bestandskonten
     elif 3000 <= num <= 3109:
         return "Materialaufwand"
     elif 3110 <= num <= 3969:
@@ -1352,6 +1368,8 @@ def classify_account_type(account_num: str) -> str:
         return "Bestand an Vorräten"
     elif 3990 <= num <= 3999:
         return "Verrechnete Stoffkosten"
+    
+    # Betriebliche Aufwendungen
     elif 4000 <= num <= 4099:
         return "Material- und Stoffverbrauch"
     elif 4100 <= num <= 4199:
@@ -1362,21 +1380,27 @@ def classify_account_type(account_num: str) -> str:
         return "Kalkulatorische Kosten"
     elif 4996 <= num <= 4999:
         return "Kosten bei Anwendung des Umsatzkostenverfahrens"
-    elif 5000 <= num <= 6999:
-        return "Sonstige betriebliche Aufwendungen"
+    
+    # There are no 5000-6999 accounts and headers, therefore it continues at 7000
+    
+    # Bestände an Erzeugnissen
     elif 7000 <= num <= 7999:
         return "Bestände an Erzeugnissen"
+    
+    # Erlöskonten
     elif 8000 <= num <= 8499:
         return "Umsatzerlöse"
     elif 8500 <= num <= 8579:
         return "Konten für die Verbuchung von Sonderbetriebseinnahmen"
     elif 8580 <= num <= 8999:
         return "Statistische Konten EÜR"
-    elif 9000 <= num <= 9099:
+    
+    # Vortrags-, Kapital-, Korrektur- und statistische Konten
+    elif 9000 <= num <= 9100:
         return "Vortragskonten"
-    elif 9100 <= num <= 9139:
+    elif 9101 <= num <= 9140:
         return "Statistische Konten für betriebswirtschaftliche Auswertungen (BWA)"
-    elif 9140 <= num <= 9142:
+    elif num in [9141, 9142]:
         return "Variables Kapital Teilhafter"
     elif 9143 <= num <= 9145:
         return "Sammelposten anrechenbare Privatsteuern"
@@ -1400,8 +1424,9 @@ def classify_account_type(account_num: str) -> str:
         return "Anrechenbare Privatsteuern Teilhafter, Fremdkapital"
     elif 9190 <= num <= 9199:
         return "Gegenkonten zu statistischen Konten für Betriebswirtschaftliche Auswertungen"
+    # The following are have the same header twice so they are summed up into one
     elif 9200 <= num <= 9219:
-        return "Statistische Konten für die Kapitalflussrechnung"
+        return "Statistische Konten für die Kennzahlen der Bilanz"
     elif 9220 <= num <= 9229:
         return "Statistische Konten zur informativen Angabe des gezeichneten Kapitals in anderer Währung"
     elif 9240 <= num <= 9259:
@@ -1413,82 +1438,68 @@ def classify_account_type(account_num: str) -> str:
     
     # Ab hier weitermachen
     
-    elif 9280 <= num <= 9289:
+    elif 9280 <= num <= 9284:
         return "Statistische Konten für die im Anhang anzugebenden sonstigen finanziellen Verpflichtungen"
-    elif 9285 <= num <= 9286:
+    elif num in [9285, 9286]:
         return "Unterschiedsbeträge aus der Abzinsung von Altersversorgungsverpflichtungen nach § 253 Abs. 6 HGB"
-    elif 9290 <= num <= 9299:
-        return "Statistische Konten für § 4 Abs. 5 EStG"
-    elif 9300 <= num <= 9309:
-        return "Einlagen atypisch stiller Gesellschafter"
+    elif 9287 <= num <= 9399:
+        return "Statistische Konten für § 4 Abs. 3 EStG"
     elif 9400 <= num <= 9499:
-        return "Privat Teilhafter (Eigenkapital, für Verwendung mit Kapitalkonto II – Konto 9840)"
-    elif 9500 <= num <= 9599:
+        return "Privat Teilhafter (Eigenkapital, für Verrechnung mit Kapitalkonto III - Konto 9840)"
+    elif 9500 <= num <= 9799:
         return "Statistische Konten für die Kapitalfortentwicklung"
-    elif 9600 <= num <= 9699:
+    
+    
+    elif 9802 <= num <= 9805:
         return "Rücklagen, Gewinn-, Verlustvorträge"
-    elif 9700 <= num <= 9749:
-        return "Statistische Anteile an den Positionen der Gewinn- und Verlustrechnung nach § 275 HGB"
-    elif 9750 <= num <= 9799:
-        return "Kapital Personengesellschaft – Vollhafter"
-    elif 9800 <= num <= 9849:
-        return "Kapital Personengesellschaft – Teilhafter"
-    elif 9850 <= num <= 9869:
-        return "Einzahlungen/Einlagen in das Privatvermögen"
-    elif 9880 <= num <= 9889:
-        return "Ausgleichsposten für aktivierte Eigenleistungen"
-    elif 9890 <= num <= 9899:
-        return "Erhaltene Vermögensgegenstände für nicht entgeltlich erwirtschaftete Leistungen"
-    elif 9900 <= num <= 9909:
+    elif 9806 <= num <= 9809:
+        return "Statistische Anteile an den Posten Jahresüberschuss/-fehlbetrag bzw. Bilanzgewinn/-verlust"
+    elif 9810 <= num <= 9839:
+        return "Kapital Personengesellschaft Vollhafter"
+    elif 9840 <= num <= 9859:
+        return "Kapital Personengesellschaft Teilhafter"
+    elif 9860 <= num <= 9879:
+        return "Einzahlungsverpflichtungen im Bereich der Forderungen"
+    elif num == 9880:
+        return "Ausgleichsposten für aktivierte eigene Anteile"
+    elif num in [9883, 9884]:
+        return "Nicht durch Vermögenseinlagen gedeckte Entnahmen"
+    elif num in [9885, 9886]:
+        return "Verrechnungskonto für nicht durch Vermögenseinlagen gedeckte Entnahmen"
+    elif num in [9887, 9888]:
         return "Steueraufwand der Gesellschafter"
-    elif 9910 <= num <= 9919:
-        return "Statistische Konten für Gewinnverwendung"
-    elif 9920 <= num <= 9929:
-        return "Konten/Umsatzkonten Verbindlichkeiten an Gesellschafter"
-    elif 9930 <= num <= 9939:
+    elif num in [9890, 9891]:
+        return "Statistische Konten für Gewinnzuschlag"
+    elif num == 9892:
+        return "Veränderung der gesamthänderisch gebundenen Rücklagen (Einlagen/Entnahmen)"
+    elif 9893 <= num <= 9909:
+        return "Vorsteuer-/Umsatzsteuerkonten zur Korrektur der Forderungen/Verbindlichkeiten (EÜR)"
+    elif 9910 <= num <= 9913:
         return "Statistische Konten für § 4 Abs. 4a EStG"
-    elif 9940 <= num <= 9949:
-        return "Statistische Konten für die Kapitalrücklage nach § 272 Abs. 2 HGB"
-    elif 9950 <= num <= 9959:
-        return "Statistische Konten für die Zinsaufwendungen nach § 4h EStG"
+    elif 9914 <= num <= 9919:
+        return "Statistische Konten für den außerhalb der Bilanz zu berücksichtigenden Investitionsabzugsbetrag nach § 7g EStG"
+    elif 9920 <= num <= 9959:
+        return "Ausstehende Einlagen"
     elif 9960 <= num <= 9969:
-        return "Statistische Konten für Sonderausgaben nach § 10b EStG"
-    elif 9970 <= num <= 9979:
-        return "Statistische Konten für die Kapitalentwicklung nach § 5 Abs. 1a EStG"
-    elif 9980 <= num <= 9989:
-        return "Statistische Konten für Rückstellungen nach § 249 HGB"
-    elif 9990 <= num <= 9999:
-        return "Statistische Konten für den Ausweis von Verbindlichkeiten nach § 268 HGB"
-
-    
-
-    
-    
-    
-    
-    
-    elif 900 <= num <= 999:
-        return "Rückstellungen und Abgrenzung"
-    elif 1000 <= num <= 1399:
-        return "Liquide Mittel und Forderungen"
-    elif 1400 <= num <= 1699:
-        return "Forderungen aus LuL und sonstige"
-    elif 1600 <= num <= 1899:
-        return "Verbindlichkeiten"
-    elif 2000 <= num <= 2999:
-        return "Finanzaufwand und Steuern"
-    elif 3000 <= num <= 3999:
-        return "Wareneingang und Materialaufwand"
-    elif 4000 <= num <= 4999:
-        return "Betriebliche Aufwendungen"
-    elif 7000 <= num <= 7999:
-        return "Bestände"
-    elif 8000 <= num <= 8999:
-        return "Umsatzerlöse und Erträge"
-    elif 9000 <= num <= 9999:
-        return "Statistische und Vortragskonten"
+        return "Konten zu Bewertungskorrekturen"
+    elif 9970 <= num <= 9975:
+        return "Statistische Konten für den außerhalb der Bilanz zu berücksichtigenden Investitionsabzugsbetrag nach § 7g EStG"
+    elif 9976 <= num <= 9979:
+        return "Statistische Konten für die Zinsschranke § 4h EStG bzw. § 8a KStG"
+    elif 9980 <= num <= 9983:
+        return "Statistische Konten für den GuVAusweis in \"Gutschrift bzw. Belastung auf Verbindlichkeitskonten\" bei den Auswertungen für PersHG nach KapCoRiLiG"
+    elif num in [9984, 9985]:
+        return "Statistische Konten für die Gewinnkorrektur nach § 60 Abs. 2 EStDV"
+    elif 9986 <= num <= 9989:
+        return "Statistische Konten für Korrekturbuchungen in der Überleitungsrechnung"
+    elif 9990 <= num <= 9998:
+        return "Statistische Konten für außergewöhnliche und aperiodische Geschäftsvorfälle für Anhangsangabe nach § 285 Nr. 31 und Nr. 32 HGB"
+    elif 10000 <= num <= 99999:
+        return "Personenkonten"
     else:
-        return "Sonstige"
+        return "N/A"
+    
+    
 
 def classify_pnl_type(account_num: str) -> str:
     """Classify P&L accounts"""
@@ -1528,22 +1539,22 @@ def classify_balance_sheet_side(account_num: str) -> str:
 def save_to_excel(df: pd.DataFrame, filename: str = "../../data/raw/excel/datev_skr03_account_mapping.xlsx") -> str:
     """Save DataFrame to Excel file with formatting"""
     
-    with pd.ExcelWriter(filename, engine='openpyxl') as writer:
+    with pd.ExcelWriter(filename, engine="openpyxl") as writer:
         # Main sheet with all accounts
-        df.to_excel(writer, sheet_name='Alle_Konten', index=False)
+        df.to_excel(writer, sheet_name="Alle_Konten", index=False)
         
         # Separate sheets by major categories
-        aktiva_accounts = df[df['Bilanz_Seite'] == 'Aktiva']
-        passiva_accounts = df[df['Bilanz_Seite'] == 'Passiva']
+        aktiva_accounts = df[df["Bilanz_Seite"] == "Aktiva"]
+        passiva_accounts = df[df["Bilanz_Seite"] == "Passiva"]
         balance_sheet_accounts = pd.concat([aktiva_accounts, passiva_accounts], ignore_index=True)
-        balance_sheet_accounts.to_excel(writer, sheet_name='Bilanzkonten', index=False)
+        balance_sheet_accounts.to_excel(writer, sheet_name="Bilanzkonten", index=False)
         
-        pnl_accounts = df[df['GuV_Position'] != 'N/A']
-        pnl_accounts.to_excel(writer, sheet_name='GuV_Konten', index=False)
+        pnl_accounts = df[df["GuV_Position"] != "N/A"]
+        pnl_accounts.to_excel(writer, sheet_name="GuV_Konten", index=False)
         
         # Summary by position
-        summary = df.groupby('Bilanzposition').size().reset_index(name='Anzahl_Konten')
-        summary.to_excel(writer, sheet_name='Zusammenfassung', index=False)
+        summary = df.groupby("Bilanzposition").size().reset_index(name="Anzahl_Konten")
+        summary.to_excel(writer, sheet_name="Zusammenfassung", index=False)
     
     print(f"Excel-Datei erstellt: {filename}")
     print(f"Anzahl Konten gesamt: {len(df)}")
@@ -1568,4 +1579,793 @@ if __name__ == "__main__":
     
     # Display summary statistics
     print(f"\nKonten nach Bilanzpositionen:")
-    print(df['Bilanzposition'].value_counts())
+    print(df["Bilanzposition"].value_counts())
+    
+
+
+
+
+
+
+
+
+# Put this somewhere up top, auf Bilanz- oder GuV-Posten achten
+
+def classify_account_type(account_num: str) -> str:
+    """
+    Klassifiziert DATEV SKR 03 Konten nach den exakten Bilanzposten.
+    Maximale Detailtiefe - jeder einzelne Bilanzposten aus dem PDF.
+    """
+    num = int(account_num)
+    
+    # Rückständige Einzahlungen
+    if num == 5:
+        return "Rückständige fällige Einzahlungen auf Geschäftsanteile"
+    
+    # Immaterielle Vermögensgegenstände - Entgeltlich erworbene
+    elif 10 <= num <= 30:
+        return "Entgeltlich erworbene Konzessionen, gewerbliche Schutzrechte und ähnliche Rechte und Werte sowie Lizenzen an solchen Rechten und Werten"
+    elif num == 35:
+        return "Geschäfts- oder Firmenwert"
+    elif num in [38, 39]:
+        return "Geleistete Anzahlungen"
+    elif num == 40:
+        return "Selbst geschaffene gewerbliche Schutzrechte und ähnliche Rechte und Werte"
+    elif 43 <= num <= 48:
+        return "Selbst geschaffene gewerbliche Schutzrechte und ähnliche Rechte und Werte"
+    
+    # Sachanlagen - Grundstücke ohne Bauten
+    elif 50 <= num <= 75:
+        return "Grundstücke, grundstücksgleiche Rechte und Bauten einschließlich der Bauten auf fremden Grundstücken"
+    elif num == 79:
+        return "Geleistete Anzahlungen und Anlagen im Bau - Anzahlungen auf Grund und Boden"
+    
+    # Sachanlagen - Bauten auf eigenen Grundstücken (Geschäfts-/Fabrikbauten)
+    elif 80 <= num <= 115:
+        return "Grundstücke, grundstücksgleiche Rechte und Bauten einschließlich der Bauten auf fremden Grundstücken - Bauten auf eigenen Grundstücken"
+    elif num == 120:
+        return "Geleistete Anzahlungen und Anlagen im Bau - Geschäfts-, Fabrik- und andere Bauten im Bau auf eigenen Grundstücken"
+    elif num == 129:
+        return "Geleistete Anzahlungen und Anlagen im Bau - Anzahlungen auf Geschäfts-, Fabrik- und andere Bauten auf eigenen Grundstücken"
+    
+    # Sachanlagen - Wohnbauten auf eigenen Grundstücken
+    elif 140 <= num <= 149:
+        return "Grundstücke, grundstücksgleiche Rechte und Bauten einschließlich der Bauten auf fremden Grundstücken - Wohnbauten auf eigenen Grundstücken"
+    elif num == 150:
+        return "Geleistete Anzahlungen und Anlagen im Bau - Wohnbauten im Bau auf eigenen Grundstücken"
+    elif num == 159:
+        return "Geleistete Anzahlungen und Anlagen im Bau - Anzahlungen auf Wohnbauten auf eigenen Grundstücken"
+    
+    # Sachanlagen - Bauten auf fremden Grundstücken (Geschäfts-/Fabrikbauten)
+    elif 160 <= num <= 179:
+        return "Grundstücke, grundstücksgleiche Rechte und Bauten einschließlich der Bauten auf fremden Grundstücken - Bauten auf fremden Grundstücken (Geschäfts-/Fabrikbauten)"
+    elif num == 180:
+        return "Geleistete Anzahlungen und Anlagen im Bau - Geschäfts-, Fabrik- und andere Bauten im Bau auf fremden Grundstücken"
+    elif num == 189:
+        return "Geleistete Anzahlungen und Anlagen im Bau - Anzahlungen auf Geschäfts-, Fabrik- und andere Bauten auf fremden Grundstücken"
+    
+    # Sachanlagen - Wohnbauten auf fremden Grundstücken
+    elif 190 <= num <= 194:
+        return "Grundstücke, grundstücksgleiche Rechte und Bauten einschließlich der Bauten auf fremden Grundstücken - Wohnbauten auf fremden Grundstücken"
+    elif num == 195:
+        return "Geleistete Anzahlungen und Anlagen im Bau - Wohnbauten im Bau auf fremden Grundstücken"
+    elif num == 199:
+        return "Geleistete Anzahlungen und Anlagen im Bau - Anzahlungen auf Wohnbauten auf fremden Grundstücken"
+    
+    # Sachanlagen - Technische Anlagen und Maschinen
+    elif 200 <= num <= 280:
+        return "Technische Anlagen und Maschinen"
+    elif num == 290:
+        return "Geleistete Anzahlungen und Anlagen im Bau - Technische Anlagen und Maschinen im Bau"
+    elif num == 299:
+        return "Geleistete Anzahlungen und Anlagen im Bau - Anzahlungen auf technische Anlagen und Maschinen"
+    
+    # Sachanlagen - Andere Anlagen, BGA
+    elif 300 <= num <= 490:
+        return "Andere Anlagen, Betriebs- und Geschäftsausstattung"
+    elif num == 498:
+        return "Geleistete Anzahlungen und Anlagen im Bau - Andere Anlagen, Betriebs- und Geschäftsausstattung im Bau"
+    elif num == 499:
+        return "Geleistete Anzahlungen und Anlagen im Bau - Anzahlungen auf andere Anlagen, Betriebs- und Geschäftsausstattung"
+    
+    # Finanzanlagen - Anteile an verbundenen Unternehmen
+    elif 500 <= num <= 504:
+        return "Anteile an verbundenen Unternehmen"
+    elif 505 <= num <= 508:
+        return "Ausleihungen an verbundene Unternehmen"
+    elif num == 509:
+        return "Anteile an verbundenen Unternehmen - Anteile an herrschender oder mehrheitlich beteiligter Gesellschaft"
+    
+    # Finanzanlagen - Beteiligungen
+    elif 510 <= num <= 519:
+        return "Beteiligungen"
+    
+    # Finanzanlagen - Ausleihungen an Unternehmen mit Beteiligungsverhältnis
+    elif 520 <= num <= 524:
+        return "Ausleihungen an Unternehmen, mit denen ein Beteiligungsverhältnis besteht"
+    
+    # Finanzanlagen - Wertpapiere des Anlagevermögens
+    elif 525 <= num <= 538:
+        return "Wertpapiere des Anlagevermögens"
+    
+    # Finanzanlagen - Sonstige Ausleihungen
+    elif 540 <= num <= 595:
+        return "Sonstige Ausleihungen"
+    
+    # Verbindlichkeiten - Anleihen
+    elif 600 <= num <= 625:
+        return "Anleihen"
+    
+    # Verbindlichkeiten - Kreditinstitute
+    elif 630 <= num <= 699:
+        return "Verbindlichkeiten gegenüber Kreditinstituten"
+    
+    # Verbindlichkeiten - Verbundene Unternehmen
+    elif 700 <= num <= 714:
+        return "Verbindlichkeiten gegenüber verbundenen Unternehmen"
+    
+    # Verbindlichkeiten - Beteiligungsverhältnis
+    elif 715 <= num <= 729:
+        return "Verbindlichkeiten gegenüber Unternehmen, mit denen ein Beteiligungsverhältnis besteht"
+    
+    # Verbindlichkeiten - Sonstige
+    elif 730 <= num <= 799:
+        return "Sonstige Verbindlichkeiten"
+    
+    # Kapital - Gezeichnetes Kapital
+    elif 800 <= num <= 815:
+        return "Gezeichnetes Kapital"
+    elif num == 819:
+        return "Eigene Anteile"
+    
+    # Kapital - Ausstehende Einlagen
+    elif 820 <= num <= 829:
+        return "Nicht eingeforderte ausstehende Einlagen"
+    elif 830 <= num <= 838:
+        return "Eingeforderte, noch ausstehende Kapitaleinlagen"
+    elif num == 839:
+        return "Nachschüsse"
+    
+    # Kapitalrücklage
+    elif 840 <= num <= 845:
+        return "Kapitalrücklage"
+    
+    # Gewinnrücklagen - Gesetzliche Rücklage
+    elif num == 846:
+        return "Gesetzliche Rücklage"
+    
+    # Gewinnrücklagen - Andere Gewinnrücklagen
+    elif num == 848:
+        return "Andere Gewinnrücklagen - Andere Gewinnrücklagen aus dem Erwerb eigener Anteile"
+    elif num == 849:
+        return "Rücklage für Anteile an einem herrschenden oder mehrheitlich beteiligten Unternehmen"
+    
+    # Gewinnrücklagen - Satzungsmäßige Rücklagen
+    elif 851 <= num <= 852:
+        return "Satzungsmäßige Rücklagen"
+    
+    # Gewinnrücklagen - Andere Gewinnrücklagen
+    elif 853 <= num <= 859:
+        return "Andere Gewinnrücklagen"
+    
+    # Gewinnvortrag/Verlustvortrag
+    elif 860 <= num <= 868:
+        return "Gewinnvortrag oder Verlustvortrag"
+    
+    # Eigenkapital Vollhafter/Einzelunternehmer
+    elif 870 <= num <= 881:
+        return "Eigenkapital Vollhafter/Einzelunternehmer"
+    
+    # Fremdkapital Vollhafter
+    elif 890 <= num <= 899:
+        return "Fremdkapital Vollhafter"
+    
+    # Eigenkapital Teilhafter
+    elif 900 <= num <= 919:
+        return "Eigenkapital Teilhafter"
+    
+    # Fremdkapital Teilhafter
+    elif 920 <= num <= 929:
+        return "Fremdkapital Teilhafter"
+    
+    # Sonderposten mit Rücklageanteil
+    elif 930 <= num <= 947:
+        return "Sonderposten mit Rücklageanteil"
+    
+    # Sonderposten für Zuschüsse und Zulagen
+    elif 948 <= num <= 949:
+        return "Sonderposten für Zuschüsse und Zulagen"
+    
+    # Rückstellungen für Pensionen
+    elif 950 <= num <= 954:
+        return "Rückstellungen für Pensionen und ähnliche Verpflichtungen"
+    elif num == 951:
+        return "Rückstellungen für Pensionen und ähnliche Verpflichtungen oder aktiver Unterschiedsbetrag aus der Vermögensverrechnung"
+    
+    # Steuerrückstellungen
+    elif 955 <= num <= 963:
+        return "Steuerrückstellungen"
+    
+    # Sonstige Rückstellungen
+    elif 964 <= num <= 967:
+        return "Sonstige Rückstellungen"
+    elif num == 967:
+        return "Sonstige Rückstellungen oder aktiver Unterschiedsbetrag aus der Vermögensverrechnung"
+    
+    # Passive latente Steuern
+    elif 968 <= num <= 969:
+        return "Passive latente Steuern"
+    
+    # Sonstige Rückstellungen
+    elif 970 <= num <= 979:
+        return "Sonstige Rückstellungen"
+    
+    # Rechnungsabgrenzungsposten (Aktiva)
+    elif num == 980:
+        return "Rechnungsabgrenzungsposten (Aktiva)"
+    elif num == 983:
+        return "Aktive latente Steuern"
+    elif 984 <= num <= 986:
+        return "Rechnungsabgrenzungsposten (Aktiva)"
+    
+    # Andere Gewinnrücklagen
+    elif 987 <= num <= 989:
+        return "Andere Gewinnrücklagen"
+    
+    # Rechnungsabgrenzungsposten (Passiva)
+    elif num == 990:
+        return "Rechnungsabgrenzungsposten (Passiva)"
+    
+    # Sonstige Aktiva oder sonstige Passiva
+    elif num == 992:
+        return "Sonstige Aktiva oder sonstige Passiva"
+    
+    # Forderungen aus LuL H-Saldo (Wertberichtigungen)
+    elif 996 <= num <= 999:
+        return "Forderungen aus Lieferungen und Leistungen H-Saldo"
+    
+    # === KLASSE 1: FINANZ- UND PRIVATKONTEN ===
+    
+    # Kasse und Bank
+    elif 1000 <= num <= 1289:
+        return "Kassenbestand, Bundesbankguthaben, Guthaben bei Kreditinstituten und Schecks"
+    elif num == 1290:
+        return "Finanzmittelanlagen im Rahmen der kurzfristigen Finanzdisposition (nicht im Finanzmittelfonds enthalten)"
+    elif num == 1295:
+        return "Verbindlichkeiten gegenüber Kreditinstituten (nicht im Finanzmittelfonds enthalten)"
+    
+    # Forderungen (Sammelkonten)
+    elif 1300 <= num <= 1309:
+        return "Forderungen aus Lieferungen und Leistungen oder sonstige Verbindlichkeiten"
+    elif 1310 <= num <= 1319:
+        return "Forderungen gegen verbundene Unternehmen oder Verbindlichkeiten gegenüber verbundenen Unternehmen"
+    elif 1320 <= num <= 1326:
+        return "Forderungen gegenüber Unternehmen, mit denen ein Beteiligungsverhältnis besteht oder Verbindlichkeiten gegenüber Unternehmen, mit denen ein Beteiligungsverhältnis besteht"
+    elif 1327 <= num <= 1329:
+        return "Sonstige Wertpapiere"
+    elif num == 1330:
+        return "Kassenbestand, Bundesbankguthaben, Guthaben bei Kreditinstituten und Schecks - Schecks"
+    
+    # Wertpapiere
+    elif num == 1340:
+        return "Anteile an verbundenen Unternehmen - Anteile an verbundenen Unternehmen (Umlaufvermögen)"
+    elif num == 1344:
+        return "Anteile an verbundenen Unternehmen - Anteile an herrschender oder mit Mehrheit beteiligter Gesellschaft"
+    elif 1348 <= num <= 1349:
+        return "Sonstige Wertpapiere"
+    
+    # Sonstige Vermögensgegenstände
+    elif 1350 <= num <= 1353:
+        return "Sonstige Vermögensgegenstände"
+    elif num == 1354:
+        return "Aktiver Unterschiedsbetrag aus der Vermögensverrechnung oder sonstige Rückstellungen"
+    elif 1355 <= num <= 1356:
+        return "Sonstige Vermögensgegenstände"
+    elif num == 1357:
+        return "Aktiver Unterschiedsbetrag aus der Vermögensverrechnung oder Rückstellungen für Pensionen und ähnliche Verpflichtungen"
+    elif 1358 <= num <= 1371:
+        return "Sonstige Vermögensgegenstände oder sonstige Verbindlichkeiten"
+    elif num == 1372:
+        return "Wirtschaftsgüter des Umlaufvermögens nach § 4 Abs. 3 Satz 4 EStG"
+    elif 1373 <= num <= 1394:
+        return "Sonstige Vermögensgegenstände"
+    elif num == 1394:
+        return "Sonstige Vermögensgegenstände oder sonstige Verbindlichkeiten - Forderungen gegen Gesellschaft/Gesamthand"
+    
+    # Forderungen aus Lieferungen und Leistungen
+    elif 1400 <= num <= 1449:
+        return "Forderungen aus Lieferungen und Leistungen oder sonstige Verbindlichkeiten"
+    elif 1450 <= num <= 1465:
+        return "Forderungen aus Lieferungen und Leistungen oder sonstige Verbindlichkeiten"
+    elif 1470 <= num <= 1475:
+        return "Forderungen gegen verbundene Unternehmen oder Verbindlichkeiten gegenüber verbundenen Unternehmen"
+    elif 1478 <= num <= 1479:
+        return "Forderungen gegen verbundene Unternehmen H-Saldo"
+    elif 1480 <= num <= 1485:
+        return "Forderungen gegen Unternehmen, mit denen ein Beteiligungsverhältnis besteht oder Verbindlichkeiten gegenüber Unternehmen, mit denen ein Beteiligungsverhältnis besteht"
+    elif 1488 <= num <= 1489:
+        return "Forderungen gegen Unternehmen, mit denen ein Beteiligungsverhältnis besteht H-Saldo"
+    elif 1490 <= num <= 1495:
+        return "Forderungen aus Lieferungen und Leistungen oder sonstige Verbindlichkeiten"
+    elif num == 1498:
+        return "Forderungen aus Lieferungen und Leistungen H-Saldo"
+    elif num == 1499:
+        return "Forderungen aus Lieferungen und Leistungen H-Saldo oder sonstige Verbindlichkeiten S-Saldo"
+    
+    # Sonstige Vermögensgegenstände
+    elif 1500 <= num <= 1509:
+        return "Sonstige Vermögensgegenstände"
+    
+    # Geleistete Anzahlungen
+    elif 1510 <= num <= 1518:
+        return "Geleistete Anzahlungen"
+    
+    # Sonstige Vermögensgegenstände (Fortsetzung)
+    elif 1519 <= num <= 1593:
+        return "Sonstige Vermögensgegenstände"
+    elif num == 1593:
+        return "Sonstige Verbindlichkeiten S-Saldo"
+    elif 1594 <= num <= 1596:
+        return "Forderungen gegen verbundene Unternehmen oder Verbindlichkeiten gegenüber verbundenen Unternehmen"
+    elif 1597 <= num <= 1599:
+        return "Forderungen gegen Unternehmen, mit denen ein Beteiligungsverhältnis besteht oder Verbindlichkeiten gegenüber Unternehmen, mit denen ein Beteiligungsverhältnis besteht"
+    
+    # Verbindlichkeiten aus Lieferungen und Leistungen
+    elif 1600 <= num <= 1624:
+        return "Verbindlichkeiten aus Lieferungen und Leistungen oder sonstige Vermögensgegenstände"
+    elif 1625 <= num <= 1628:
+        return "Verbindlichkeiten aus Lieferungen und Leistungen"
+    elif 1630 <= num <= 1638:
+        return "Verbindlichkeiten gegenüber verbundenen Unternehmen oder Forderungen gegen verbundene Unternehmen"
+    elif 1640 <= num <= 1648:
+        return "Verbindlichkeiten gegenüber Unternehmen, mit denen ein Beteiligungsverhältnis besteht oder Forderungen gegen Unternehmen, mit denen ein Beteiligungsverhältnis besteht"
+    elif 1650 <= num <= 1658:
+        return "Verbindlichkeiten aus Lieferungen und Leistungen oder sonstige Vermögensgegenstände"
+    elif num == 1659:
+        return "Verbindlichkeiten aus Lieferungen und Leistungen S-Saldo oder sonstige Vermögensgegenstände H-Saldo"
+    
+    # Verbindlichkeiten aus Wechseln
+    elif 1660 <= num <= 1664:
+        return "Verbindlichkeiten aus der Annahme gezogener Wechsel und aus der Ausstellung eigener Wechsel"
+    
+    # Sonstige Verbindlichkeiten
+    elif 1665 <= num <= 1709:
+        return "Sonstige Verbindlichkeiten"
+    
+    # Erhaltene Anzahlungen
+    elif 1710 <= num <= 1721:
+        return "Erhaltene Anzahlungen auf Bestellungen (Passiva)"
+    elif num == 1722:
+        return "Erhaltene Anzahlungen auf Bestellungen (Aktiva)"
+    
+    # Sonstige Verbindlichkeiten oder sonstige Vermögensgegenstände
+    elif 1725 <= num <= 1799:
+        return "Sonstige Verbindlichkeiten oder sonstige Vermögensgegenstände"
+    elif 1760 <= num <= 1794:
+        return "Steuerrückstellungen oder sonstige Vermögensgegenstände"
+    elif num == 1793:
+        return "Sonstige Vermögensgegenstände H-Saldo"
+    
+    # Privat (Eigenkapital)
+    elif 1800 <= num <= 1891:
+        return "Privat (Eigenkapital) Vollhafter/Einzelunternehmer"
+    
+    # Privat (Fremdkapital) Teilhafter
+    elif 1900 <= num <= 1999:
+        return "Privat (Fremdkapital) Teilhafter"
+    
+    # === KLASSE 2: ABGRENZUNGSKONTEN ===
+    
+    # Sonstige betriebliche Aufwendungen
+    elif 2000 <= num <= 2009:
+        return "Sonstige betriebliche Aufwendungen"
+    elif 2010 <= num <= 2020:
+        return "Betriebsfremde und periodenfremde Aufwendungen"
+    elif 2090 <= num <= 2094:
+        return "Aufwendungen aus der Anwendung von Übergangsvorschriften i. S. d. BilMoG"
+    
+    # Zinsen und ähnliche Aufwendungen
+    elif 2100 <= num <= 2145:
+        return "Zinsen und ähnliche Aufwendungen"
+    elif 2146 <= num <= 2147:
+        return "Zinsen und ähnliche Aufwendungen oder sonstige Zinsen und ähnliche Erträge"
+    elif 2148 <= num <= 2149:
+        return "Zinsen und ähnliche Aufwendungen"
+    
+    # Sonstige betriebliche Aufwendungen
+    elif 2150 <= num <= 2176:
+        return "Sonstige betriebliche Aufwendungen"
+    
+    # Steuern vom Einkommen und Ertrag
+    elif 2200 <= num <= 2283:
+        return "Steuern vom Einkommen und Ertrag"
+    
+    # Sonstige Steuern
+    elif 2285 <= num <= 2289:
+        return "Sonstige Steuern"
+    
+    # Sonstige Aufwendungen
+    elif 2300 <= num <= 2309:
+        return "Sonstige betriebliche Aufwendungen"
+    elif 2310 <= num <= 2328:
+        return "Sonstige betriebliche Aufwendungen - Anlagenabgänge"
+    elif num == 2315:
+        return "Sonstige betriebliche Erträge - Anlagenabgänge (bei Buchgewinn)"
+    elif num == 2316:
+        return "Sonstige betriebliche Erträge - Anlagenabgänge (bei Buchgewinn)"
+    elif num == 2317:
+        return "Sonstige betriebliche Erträge - Anlagenabgänge (bei Buchgewinn)"
+    elif num == 2318:
+        return "Sonstige betriebliche Erträge - Anlagenabgänge (bei Buchgewinn)"
+    elif 2339 <= num <= 2347:
+        return "Sonstige betriebliche Aufwendungen - Einstellungen in Rücklagen"
+    elif num == 2350:
+        return "Sonstige Grundstücksaufwendungen (neutral)"
+    elif num == 2375:
+        return "Sonstige Steuern - Grundsteuer"
+    elif 2380 <= num <= 2390:
+        return "Sonstige betriebliche Aufwendungen - Zuwendungen und Spenden"
+    elif 2400 <= num <= 2409:
+        return "Sonstige betriebliche Aufwendungen - Forderungsverluste (übliche Höhe)"
+    elif 2430 <= num <= 2449:
+        return "Abschreibungen auf Vermögensgegenstände des Umlaufvermögens, soweit diese die in der Kapitalgesellschaft üblichen Abschreibungen überschreiten"
+    elif 2450 <= num <= 2451:
+        return "Sonstige betriebliche Aufwendungen - Einstellungen in Wertberichtigungen"
+    elif num == 2480:
+        return "Einstellungen in Gewinnrücklagen in die Rücklage für Anteile an einem herrschenden oder mehrheitlich beteiligten Unternehmen"
+    elif num == 2481:
+        return "Einstellungen in gesamthänderisch gebundene Rücklagen"
+    elif 2485 <= num <= 2489:
+        return "Einstellungen in Gewinnrücklagen"
+    elif num == 2490:
+        return "Aufwendungen aus Verlustübernahme"
+    elif num == 2491:
+        return "Auf Grund einer Gewinngemeinschaft, eines Gewinn- oder Teilgewinnabführungsvertrags abgeführte Gewinne oder Erträge aus Verlustübernahme"
+    elif num == 2492:
+        return "Auf Grund einer Gewinngemeinschaft, eines Gewinn- oder Teilgewinnabführungsvertrags abgeführte Gewinne"
+    elif num == 2493:
+        return "Auf Grund einer Gewinngemeinschaft, eines Gewinn- oder Teilgewinnabführungsvertrags abgeführte Gewinne oder Erträge aus Verlustübernahme"
+    elif num == 2494:
+        return "Auf Grund einer Gewinngemeinschaft, eines Gewinn- oder Teilgewinnabführungsvertrags abgeführte Gewinne"
+    elif num == 2495:
+        return "Einstellung in die Kapitalrücklage nach den Vorschriften über die vereinfachte Kapitalherabsetzung"
+    elif num == 2496:
+        return "Einstellungen in Gewinnrücklagen in die gesetzliche Rücklage"
+    elif num == 2497:
+        return "Einstellungen in Gewinnrücklagen in satzungsmäßige Rücklagen"
+    elif num == 2498:
+        return "Einstellungen in Gewinnrücklagen in die Rücklage für Anteile an einem herrschenden oder mehrheitlich beteiligten Unternehmen"
+    elif num == 2499:
+        return "Einstellungen in Gewinnrücklagen in andere Gewinnrücklagen"
+    
+    # Sonstige betriebliche Erträge
+    elif 2504 <= num <= 2509:
+        return "Sonstige betriebliche Erträge"
+    elif 2510 <= num <= 2520:
+        return "Betriebsfremde und periodenfremde Erträge"
+    elif 2590 <= num <= 2594:
+        return "Erträge aus der Anwendung von Übergangsvorschriften i. S. d. BilMoG"
+    
+    # Zinserträge - Erträge aus Beteiligungen
+    elif 2600 <= num <= 2649:
+        return "Erträge aus Beteiligungen"
+    
+    # Zinserträge - Erträge aus anderen Wertpapieren und Ausleihungen
+    elif 2650 <= num <= 2689:
+        return "Sonstige Zinsen und ähnliche Erträge"
+    elif 2686 <= num <= 2687:
+        return "Sonstige Zinsen und ähnliche Erträge oder Zinsen und ähnliche Aufwendungen"
+    
+    # Sonstige Erträge
+    elif 2700 <= num <= 2749:
+        return "Sonstige betriebliche Erträge"
+    elif 2750 <= num <= 2752:
+        return "Umsatzerlöse - Grundstückserträge"
+    elif 2760 <= num <= 2764:
+        return "Sonstige betriebliche Erträge"
+    elif num == 2790:
+        return "Erträge aus Verlustübernahme"
+    elif num == 2792:
+        return "Auf Grund einer Gewinngemeinschaft, eines Gewinn- oder Teilgewinnabführungsvertrags erhaltene Gewinne"
+    elif num == 2794:
+        return "Auf Grund einer Gewinngemeinschaft, eines Gewinn- oder Teilgewinnabführungsvertrags erhaltene Gewinne"    
+    elif num == 2795:
+        return "Entnahmen aus der Kapitalrücklage"
+    elif num == 2796:
+        return "Entnahmen aus Gewinnrücklagen aus der gesetzlichen Rücklage"
+    elif num == 2797:
+        return "Entnahmen aus Gewinnrücklagen aus satzungsmäßigen Rücklagen"
+    elif num == 2798:
+        return "Entnahmen aus Gewinnrücklagen aus der Rücklage für Anteile an einem herrschenden oder mehrheitlich beteiligten Unternehmen"
+    elif num == 2799:
+        return "Entnahmen aus Gewinnrücklagen aus anderen Gewinnrücklagen"
+    elif num == 2840:
+        return "Entnahmen aus Gewinnrücklagen aus der Rücklage für Anteile an einem herrschenden oder mehrheitlich beteiligten Unternehmen"
+    elif num == 2841:
+        return "Entnahmen aus gesamthänderisch gebundenen Rücklagen"
+    elif num == 2850:
+        return "Entnahmen aus anderen Ergebnisrücklagen"
+    elif 2860 <= num <= 2868:
+        return "Gewinnvortrag oder Verlustvortrag"
+    elif num == 2870:
+        return "Ausschüttung"
+    elif 2890 <= num <= 2895:
+        return "Verrechnete kalkulatorische Kosten - Sonstige betriebliche Aufwendungen"
+    
+    # === KLASSE 3: WARENEINGANGS- UND BESTANDSKONTEN ===
+    
+    # Materialaufwand - Roh-, Hilfs- und Betriebsstoffe
+    elif 3000 <= num <= 3098:
+        return "Aufwendungen für Roh-, Hilfs- und Betriebsstoffe und für bezogene Waren"
+    elif num == 3100:
+        return "Aufwendungen für bezogene Leistungen"
+    elif 3106 <= num <= 3109:
+        return "Aufwendungen für bezogene Leistungen"
+    
+    # Umsätze § 13b UStG
+    elif 3110 <= num <= 3165:
+        return "Umsätze, für die als Leistungsempfänger die Steuer nach § 13b UStG geschuldet wird - Aufwendungen für bezogene Leistungen"
+    elif 3170 <= num <= 3185:
+        return "Aufwendungen für bezogene Leistungen"
+    
+    # Wareneingang
+    elif 3200 <= num <= 3349:
+        return "Aufwendungen für Roh-, Hilfs- und Betriebsstoffe und für bezogene Waren - Wareneingang"
+    elif 3400 <= num <= 3599:
+        return "Aufwendungen für Roh-, Hilfs- und Betriebsstoffe und für bezogene Waren - Wareneingang"
+    elif 3600 <= num <= 3669:
+        return "Nicht abziehbare Vorsteuer"
+    
+    # Nachlässe
+    elif 3700 <= num <= 3729:
+        return "Aufwendungen für Roh-, Hilfs- und Betriebsstoffe und für bezogene Waren - Nachlässe"
+    
+    # Erhaltene Skonti
+    elif 3730 <= num <= 3749:
+        return "Aufwendungen für Roh-, Hilfs- und Betriebsstoffe und für bezogene Waren - Erhaltene Skonti"
+    
+    # Erhaltene Boni
+    elif 3750 <= num <= 3769:
+        return "Aufwendungen für Roh-, Hilfs- und Betriebsstoffe und für bezogene Waren - Erhaltene Boni"
+    
+    # Erhaltene Rabatte
+    elif 3770 <= num <= 3799:
+        return "Aufwendungen für Roh-, Hilfs- und Betriebsstoffe und für bezogene Waren - Erhaltene Rabatte"
+    
+    # Bezugsnebenkosten
+    elif 3800 <= num <= 3850:
+        return "Aufwendungen für Roh-, Hilfs- und Betriebsstoffe und für bezogene Waren - Bezugsnebenkosten"
+    
+    # Bestandsveränderungen
+    elif 3950 <= num <= 3969:
+        return "Bestandsveränderungen"
+    
+    # Bestand an Vorräten
+    elif 3970 <= num <= 3989:
+        return "Bestand an Vorräten"
+    
+    # Verrechnete Stoffkosten
+    elif 3990 <= num <= 3999:
+        return "Verrechnete Stoffkosten - Aufwendungen für Roh-, Hilfs- und Betriebsstoffe und für bezogene Waren"
+    
+    # === KLASSE 4: BETRIEBLICHE AUFWENDUNGEN ===
+    
+    # Material- und Stoffverbrauch
+    elif 4000 <= num <= 4099:
+        return "Material- und Stoffverbrauch - Aufwendungen für Roh-, Hilfs- und Betriebsstoffe und für bezogene Waren"
+    
+    # Löhne und Gehälter
+    elif 4100 <= num <= 4129:
+        return "Löhne und Gehälter"
+    
+    # Soziale Abgaben
+    elif 4130 <= num <= 4199:
+        return "Soziale Abgaben und Aufwendungen für Altersversorgung und für Unterstützung"
+    elif num == 4139:
+        return "Sonstige betriebliche Aufwendungen - Ausgleichsabgabe Schwerbehindertengesetz"
+    elif 4145 <= num <= 4159:
+        return "Löhne und Gehälter"
+    elif 4160 <= num <= 4199:
+        return "Soziale Abgaben und Aufwendungen für Altersversorgung und für Unterstützung"
+    
+    # Raumkosten
+    elif 4200 <= num <= 4299:
+        return "Sonstige betriebliche Aufwendungen - Raumkosten"
+    
+    # Steuern und Versicherungen
+    elif 4300 <= num <= 4306:
+        return "Nicht abziehbare Vorsteuer"
+    elif num == 4320:
+        return "Steuern vom Einkommen und Ertrag - Gewerbesteuer"
+    elif 4340 <= num <= 4397:
+        return "Sonstige Steuern / Sonstige betriebliche Aufwendungen"
+    
+    # Fahrzeugkosten
+    elif 4500 <= num <= 4509:
+        return "Sonstige betriebliche Aufwendungen - Fahrzeugkosten"
+    elif num == 4510:
+        return "Sonstige Steuern - Kfz-Steuer"
+    elif 4520 <= num <= 4595:
+        return "Sonstige betriebliche Aufwendungen - Fahrzeugkosten"
+    
+    # Werbekosten
+    elif 4600 <= num <= 4689:
+        return "Sonstige betriebliche Aufwendungen - Werbekosten / Geschenke / Bewirtungskosten / Reisekosten"
+    
+    # Kosten der Warenabgabe
+    elif 4700 <= num <= 4799:
+        return "Sonstige betriebliche Aufwendungen - Kosten der Warenabgabe"
+    
+    # Reparaturen
+    elif 4800 <= num <= 4815:
+        return "Sonstige betriebliche Aufwendungen - Reparaturen und Instandhaltungen"
+    
+    # Abschreibungen
+    elif 4822 <= num <= 4865:
+        return "Abschreibungen auf immaterielle Vermögensgegenstände des Anlagevermögens und Sachanlagen"
+    elif 4866 <= num <= 4893:
+        return "Abschreibungen auf Finanzanlagen und auf Wertpapiere des Umlaufvermögens"
+    elif 4880 <= num <= 4887:
+        return "Abschreibungen auf Vermögensgegenstände des Umlaufvermögens, soweit diese die in der Kapitalgesellschaft üblichen Abschreibungen überschreiten"
+    elif 4892 <= num <= 4893:
+        return "Abschreibungen auf Vermögensgegenstände des Umlaufvermögens, soweit diese die in der Kapitalgesellschaft üblichen Abschreibungen überschreiten"
+    
+    # Sonstige betriebliche Aufwendungen
+    elif 4900 <= num <= 4985:
+        return "Sonstige betriebliche Aufwendungen"
+    
+    # Kalkulatorische Kosten
+    elif 4990 <= num <= 4995:
+        return "Kalkulatorische Kosten - Sonstige betriebliche Aufwendungen"
+    
+    # Kosten Umsatzkostenverfahren
+    elif 4996 <= num <= 4999:
+        return "Kosten bei Anwendung des Umsatzkostenverfahrens - Sonstige betriebliche Aufwendungen"
+    
+    # === KLASSE 5-6: SONSTIGE BETRIEBLICHE AUFWENDUNGEN ===
+    elif 5000 <= num <= 6999:
+        return "Sonstige betriebliche Aufwendungen"
+    
+    # === KLASSE 7: BESTÄNDE AN ERZEUGNISSEN ===
+    
+    elif 7000 <= num <= 7089:
+        return "Unfertige Erzeugnisse, unfertige Leistungen"
+    elif num == 7090:
+        return "In Ausführung befindliche Bauaufträge"
+    elif num == 7095:
+        return "In Arbeit befindliche Aufträge"
+    elif 7100 <= num <= 7999:
+        return "Fertige Erzeugnisse und Waren"
+    
+    # === KLASSE 8: ERLÖSKONTEN ===
+    
+    # Umsatzerlöse - Steuerfreie Umsätze
+    elif 8000 <= num <= 8099:
+        return "Umsatzerlöse"
+    elif 8100 <= num <= 8165:
+        return "Umsatzerlöse - Steuerfreie Umsätze"
+    elif 8190 <= num <= 8198:
+        return "Umsatzerlöse - Durchschnittssätze § 24 UStG / Kleinunternehmer"
+    
+    # Umsatzerlöse - Steuerpflichtige Erlöse
+    elif num == 8200:
+        return "Umsatzerlöse - Erlöse"
+    elif num == 8290:
+        return "Umsatzerlöse - Erlöse 0% USt"
+    elif 8300 <= num <= 8339:
+        return "Umsatzerlöse - Erlöse 7% / 19% USt / EU-Lieferungen"
+    elif 8340 <= num <= 8499:
+        return "Umsatzerlöse - Erlöse 16% / 19% USt"
+    
+    # Sonderbetriebseinnahmen
+    elif 8500 <= num <= 8505:
+        return "Sonderbetriebseinnahmen"
+    elif 8510 <= num <= 8579:
+        return "Umsatzerlöse - Provisionsumsätze / Sonstige Erträge"
+    
+    # Statistische Konten EÜR
+    elif 8580 <= num <= 8589:
+        return "Statistische Konten EÜR"
+    
+    # Sonstige betriebliche Erträge
+    elif 8590 <= num <= 8614:
+        return "Sonstige betriebliche Erträge - Verrechnete Sachbezüge"
+    elif 8625 <= num <= 8649:
+        return "Sonstige betriebliche Erträge"
+    
+    # Zinserträge
+    elif 8650 <= num <= 8660:
+        return "Sonstige Zinsen und ähnliche Erträge - Erlöse Zinsen und Diskontspesen"
+    
+    # Erlösschmälerungen
+    elif 8700 <= num <= 8799:
+        return "Umsatzerlöse - Erlösschmälerungen / Gewährte Skonti / Gewährte Boni / Gewährte Rabatte"
+    
+    # Erlöse aus Anlagenverkäufen
+    elif 8800 <= num <= 8853:
+        return "Sonstige betriebliche Aufwendungen / Sonstige betriebliche Erträge - Erlöse aus Verkäufen Anlagevermögen"
+    
+    # Unentgeltliche Wertabgaben
+    elif 8900 <= num <= 8949:
+        return "Sonstige betriebliche Erträge - Unentgeltliche Wertabgaben"
+    elif 8950 <= num <= 8959:
+        return "Umsatzerlöse - Nicht steuerbare Umsätze / Umsatzsteuervergütungen"
+    
+    # Bestandsveränderungen
+    elif 8960 <= num <= 8980:
+        return "Erhöhung des Bestands an fertigen und unfertigen Erzeugnissen oder Verminderung des Bestands"
+    
+    # Andere aktivierte Eigenleistungen
+    elif 8990 <= num <= 8995:
+        return "Andere aktivierte Eigenleistungen"
+    
+    # === KLASSE 9: VORTRAGS-, KAPITAL-, KORREKTUR- UND STATISTISCHE KONTEN ===
+    
+    # Vortragskonten
+    elif 9000 <= num <= 9099:
+        return "Vortragskonten"
+    
+    # Statistische Konten BWA
+    elif 9101 <= num <= 9145:
+        return "Statistische Konten für Betriebswirtschaftliche Auswertungen (BWA)"
+    
+    # Kapitalkontenanpassungen
+    elif 9146 <= num <= 9189:
+        return "Kapitaländerungen / Andere Kapitalkontenanpassungen / Umbuchungen / Anrechenbare Privatsteuern"
+    
+    # Gegenkonten
+    elif 9190 <= num <= 9199:
+        return "Gegenkonten zu statistischen Konten für Betriebswirtschaftliche Auswertungen"
+    
+    # Statistische Konten Bilanz
+    elif 9200 <= num <= 9229:
+        return "Statistische Konten für die Kennzahlen der Bilanz"
+    
+    # Kapitalflussrechnung
+    elif 9240 <= num <= 9259:
+        return "Statistische Konten für die Kapitalflussrechnung"
+    
+    # Rückstellungen
+    elif 9260 <= num <= 9269:
+        return "Aufgliederung der Rückstellungen für die Programme der Wirtschaftsberatung"
+    
+    # Haftungsverhältnisse
+    elif 9270 <= num <= 9279:
+        return "Statistische Konten für in der Bilanz auszuweisende Haftungsverhältnisse"
+    
+    # Sonstige finanzielle Verpflichtungen
+    elif 9280 <= num <= 9289:
+        return "Statistische Konten für die im Anhang anzugebenden sonstigen finanziellen Verpflichtungen"
+    elif 9285 <= num <= 9286:
+        return "Unterschiedsbetrag aus der Abzinsung von Altersversorgungsverpflichtungen nach § 253 Abs. 6 HGB"
+    elif 9287 <= num <= 9293:
+        return "Statistische Konten für § 4 Abs. 3 EStG"
+    
+    # Einlagen stiller Gesellschafter
+    elif num == 9295:
+        return "Einlagen stiller Gesellschafter"
+    elif 9297 <= num <= 9299:
+        return "Steuerlicher Ausgleichsposten"
+    
+    # Privat Teilhafter
+    elif 9400 <= num <= 9499:
+        return "Privat Teilhafter (Eigenkapital, für Verrechnung mit Kapitalkonto III)"
+    
+    # Statistische Konten Kapitalkontenentwicklung
+    elif 9500 <= num <= 9799:
+        return "Statistische Konten für die Kapitalkontenentwicklung"
+    
+    # Rücklagen
+    elif 9802 <= num <= 9809:
+        return "Rücklagen, Gewinn-, Verlustvortrag / Statistische Anteile"
+    
+    # Kapital Personenhandelsgesellschaft
+    elif 9810 <= num <= 9899:
+        return "Kapital Personenhandelsgesellschaft / Einzahlungsverpflichtungen / Ausgleichsposten / Steueraufwand"
+    
+    # Statistische Konten
+    elif 9900 <= num <= 9999:
+        return "Statistische Konten (Investitionsabzugsbetrag / Zinsschranke / Bewertungskorrekturen / Außergewöhnliche Geschäftsvorfälle)"
+    
+    else:
+        return "N/A"
