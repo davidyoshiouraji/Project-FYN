@@ -1334,11 +1334,11 @@ def classify_account_type(account_num: str) -> str:
         return "Privat (Fremdkapital) Teilhafter"
     
     # Abgrenzungskonten
-    elif 2000 <= num <= 2009:
+    elif 2000 <= num <= 2008:
         return "Sonstige betriebliche Aufwendungen"
     elif 2010 <= num <= 2020:
         return "Betriebsfremde und periodenfremde Aufwendungen"
-    elif 2030 <= num <= 2099:
+    elif 2090 <= num <= 2094:
         return "Aufwendungen aus der Anwendung von Übergangsvorschriften i. S. d. BilMoG"
     elif 2100 <= num <= 2199:
         return "Zinsen und ähnliche Aufwendungen"
@@ -1720,7 +1720,6 @@ def classify_position_level(account_num: str) -> str:
         return "Forderungen aus Lieferungen und Leistungen H-Saldo"
     
     # Finanz- und Privatkonten    
-    # Kassenbestand, Bundesbank- und Postbankguthaben, Guthaben bei Kreditinstituten und Schecks 
     elif 1000 <= num <= 1020 or num == 1330:
         return "Kassenbestand, Bundesbankguthaben, Guthaben bei Kreditinstituten und Schecks"
     elif 1100 <= num <= 1295:
@@ -1737,43 +1736,17 @@ def classify_position_level(account_num: str) -> str:
         return "Anteile an verbundenen Unternehmen"
     elif 1348 <= num <= 1349:
         return "Sonstige Wertpapiere"
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    # Ab hier weitermachen
-    elif 1350 <= num <= 1353:
+    elif 1350 <= num <= 1353 or num in [1355, 1356] or 1373 <= num <= 1379 or 1381 <= num <= 1389 or num == 1391:
         return "Sonstige Vermögensgegenstände"
     elif num == 1354:
         return "Aktiver Unterschiedsbetrag aus der Vermögensverrechnung oder sonstige Rückstellungen"
-    elif 1355 <= num <= 1356:
-        return "Sonstige Vermögensgegenstände"
     elif num == 1357:
         return "Aktiver Unterschiedsbetrag aus der Vermögensverrechnung oder Rückstellungen für Pensionen und ähnliche Verpflichtungen"
-    elif 1358 <= num <= 1371:
+    elif 1360 <= num <= 1372 or num in [1380, 1390]:
         return "Sonstige Vermögensgegenstände oder sonstige Verbindlichkeiten"
-    elif num == 1372:
-        return "Wirtschaftsgüter des Umlaufvermögens nach § 4 Abs. 3 Satz 4 EStG"
-    elif 1373 <= num <= 1394:
-        return "Sonstige Vermögensgegenstände"
     elif num == 1394:
-        return "Sonstige Vermögensgegenstände oder sonstige Verbindlichkeiten - Forderungen gegen Gesellschaft/Gesamthand"
-    
-    # Forderungen aus Lieferungen und Leistungen
-    elif 1400 <= num <= 1449:
-        return "Forderungen aus Lieferungen und Leistungen oder sonstige Verbindlichkeiten"
-    elif 1450 <= num <= 1465:
+        return "Forderungen gegen Gesellschaft/Gesamthand"
+    elif 1400 <= num <= 1465:
         return "Forderungen aus Lieferungen und Leistungen oder sonstige Verbindlichkeiten"
     elif 1470 <= num <= 1475:
         return "Forderungen gegen verbundene Unternehmen oder Verbindlichkeiten gegenüber verbundenen Unternehmen"
@@ -1789,128 +1762,76 @@ def classify_position_level(account_num: str) -> str:
         return "Forderungen aus Lieferungen und Leistungen H-Saldo"
     elif num == 1499:
         return "Forderungen aus Lieferungen und Leistungen H-Saldo oder sonstige Verbindlichkeiten S-Saldo"
-    
-    # Sonstige Vermögensgegenstände
-    elif 1500 <= num <= 1509:
+    elif 1500 <= num <= 1508 or 1519 <= num <= 1555:
         return "Sonstige Vermögensgegenstände"
-    
-    # Geleistete Anzahlungen
     elif 1510 <= num <= 1518:
         return "Geleistete Anzahlungen"
-    
-    # Sonstige Vermögensgegenstände (Fortsetzung)
-    elif 1519 <= num <= 1593:
-        return "Sonstige Vermögensgegenstände"
+    elif 1556 <= num <= 1592 or num == 1792:
+        return "Sonstige Vermögensgegenstände oder sonstige Verbindlichkeiten"
     elif num == 1593:
         return "Sonstige Verbindlichkeiten S-Saldo"
     elif 1594 <= num <= 1596:
         return "Forderungen gegen verbundene Unternehmen oder Verbindlichkeiten gegenüber verbundenen Unternehmen"
     elif 1597 <= num <= 1599:
         return "Forderungen gegen Unternehmen, mit denen ein Beteiligungsverhältnis besteht oder Verbindlichkeiten gegenüber Unternehmen, mit denen ein Beteiligungsverhältnis besteht"
-    
-    # Verbindlichkeiten aus Lieferungen und Leistungen
-    elif 1600 <= num <= 1624:
+    elif 1600 <= num <= 1628 or 1650 <= num <= 1658:
         return "Verbindlichkeiten aus Lieferungen und Leistungen oder sonstige Vermögensgegenstände"
-    elif 1625 <= num <= 1628:
-        return "Verbindlichkeiten aus Lieferungen und Leistungen"
     elif 1630 <= num <= 1638:
         return "Verbindlichkeiten gegenüber verbundenen Unternehmen oder Forderungen gegen verbundene Unternehmen"
     elif 1640 <= num <= 1648:
         return "Verbindlichkeiten gegenüber Unternehmen, mit denen ein Beteiligungsverhältnis besteht oder Forderungen gegen Unternehmen, mit denen ein Beteiligungsverhältnis besteht"
-    elif 1650 <= num <= 1658:
-        return "Verbindlichkeiten aus Lieferungen und Leistungen oder sonstige Vermögensgegenstände"
     elif num == 1659:
         return "Verbindlichkeiten aus Lieferungen und Leistungen S-Saldo oder sonstige Vermögensgegenstände H-Saldo"
-    
-    # Verbindlichkeiten aus Wechseln
     elif 1660 <= num <= 1664:
         return "Verbindlichkeiten aus der Annahme gezogener Wechsel und aus der Ausstellung eigener Wechsel"
-    
-    # Sonstige Verbindlichkeiten
-    elif 1665 <= num <= 1709:
+    elif 1665 <= num <= 1709 or 1728 <= num <= 1740 or 1746 <= num <= 1754 or num in [1767, 1768] or 1795 <= num <= 1799:
         return "Sonstige Verbindlichkeiten"
-    
-    # Erhaltene Anzahlungen
     elif 1710 <= num <= 1721:
         return "Erhaltene Anzahlungen auf Bestellungen (Passiva)"
     elif num == 1722:
         return "Erhaltene Anzahlungen auf Bestellungen (Aktiva)"
-    
-    # Sonstige Verbindlichkeiten oder sonstige Vermögensgegenstände
-    elif 1725 <= num <= 1799:
+    elif num == 1725 or 1741 <= num <= 1745 or 1755 <= num <= 1759 or 1769 <= num <= 1791 or num == 1794:
         return "Sonstige Verbindlichkeiten oder sonstige Vermögensgegenstände"
-    elif 1760 <= num <= 1794:
+    elif 1760 <= num <= 1766:
         return "Steuerrückstellungen oder sonstige Vermögensgegenstände"
     elif num == 1793:
         return "Sonstige Vermögensgegenstände H-Saldo"
-    
-    # Privat (Eigenkapital)
     elif 1800 <= num <= 1891:
         return "Privat (Eigenkapital) Vollhafter/Einzelunternehmer"
-    
-    # Privat (Fremdkapital) Teilhafter
     elif 1900 <= num <= 1999:
         return "Privat (Fremdkapital) Teilhafter"
-    
-    # === KLASSE 2: ABGRENZUNGSKONTEN ===
-    
-    # Sonstige betriebliche Aufwendungen
-    elif 2000 <= num <= 2009:
+        
+    # Abgrenzungskonten
+    elif 2000 <= num <= 2094 or num in [2148, 2149] or 2300 <= num <= 2313 or 2320 <= num <= 2350 or 2380 <= num <= 2409 or num in [2450, 2451]:
         return "Sonstige betriebliche Aufwendungen"
-    elif 2010 <= num <= 2020:
-        return "Betriebsfremde und periodenfremde Aufwendungen"
-    elif 2090 <= num <= 2094:
-        return "Aufwendungen aus der Anwendung von Übergangsvorschriften i. S. d. BilMoG"
-    
-    # Zinsen und ähnliche Aufwendungen
     elif 2100 <= num <= 2145:
         return "Zinsen und ähnliche Aufwendungen"
     elif 2146 <= num <= 2147:
         return "Zinsen und ähnliche Aufwendungen oder sonstige Zinsen und ähnliche Erträge"
-    elif 2148 <= num <= 2149:
-        return "Zinsen und ähnliche Aufwendungen"
-    
-    # Sonstige betriebliche Aufwendungen
     elif 2150 <= num <= 2176:
         return "Sonstige betriebliche Aufwendungen"
-    
-    # Steuern vom Einkommen und Ertrag
     elif 2200 <= num <= 2283:
         return "Steuern vom Einkommen und Ertrag"
-    
-    # Sonstige Steuern
-    elif 2285 <= num <= 2289:
+    elif 2285 <= num <= 2289 or 2375:
         return "Sonstige Steuern"
-    
-    # Sonstige Aufwendungen
-    elif 2300 <= num <= 2309:
+    elif 2300 <= num <= 2313 or 2320 <= num <= 2350 or 2380 <= num <= 2409:
         return "Sonstige betriebliche Aufwendungen"
-    elif 2310 <= num <= 2328:
-        return "Sonstige betriebliche Aufwendungen - Anlagenabgänge"
-    elif num == 2315:
-        return "Sonstige betriebliche Erträge - Anlagenabgänge (bei Buchgewinn)"
-    elif num == 2316:
-        return "Sonstige betriebliche Erträge - Anlagenabgänge (bei Buchgewinn)"
-    elif num == 2317:
-        return "Sonstige betriebliche Erträge - Anlagenabgänge (bei Buchgewinn)"
-    elif num == 2318:
-        return "Sonstige betriebliche Erträge - Anlagenabgänge (bei Buchgewinn)"
-    elif 2339 <= num <= 2347:
-        return "Sonstige betriebliche Aufwendungen - Einstellungen in Rücklagen"
-    elif num == 2350:
-        return "Sonstige Grundstücksaufwendungen (neutral)"
-    elif num == 2375:
-        return "Sonstige Steuern - Grundsteuer"
-    elif 2380 <= num <= 2390:
-        return "Sonstige betriebliche Aufwendungen - Zuwendungen und Spenden"
-    elif 2400 <= num <= 2409:
-        return "Sonstige betriebliche Aufwendungen - Forderungsverluste (übliche Höhe)"
-    elif 2430 <= num <= 2449:
+    elif 2315 <= num <= 2318:
+        return "Sonstige betriebliche Erträge"
+    elif 2430 <= num <= 2441:
         return "Abschreibungen auf Vermögensgegenstände des Umlaufvermögens, soweit diese die in der Kapitalgesellschaft üblichen Abschreibungen überschreiten"
-    elif 2450 <= num <= 2451:
-        return "Sonstige betriebliche Aufwendungen - Einstellungen in Wertberichtigungen"
     elif num == 2480:
         return "Einstellungen in Gewinnrücklagen in die Rücklage für Anteile an einem herrschenden oder mehrheitlich beteiligten Unternehmen"
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    # Ab hier weitermachen
     elif num == 2481:
         return "Einstellungen in gesamthänderisch gebundene Rücklagen"
     elif 2485 <= num <= 2489:
